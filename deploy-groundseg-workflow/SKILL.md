@@ -1,8 +1,8 @@
 ---
 name: deploy-groundseg-workflow
+description: Complete GroundSeg + networking deployment workflow for multi-ship container orchestration with 20 orchestrated phases
 user-invocable: true
 disable-model-invocation: false
-Complete GroundSeg + networking deployment workflow for multi-ship container orchestration with 20 orchestrated phases 
 ---
 
 # Deploy GroundSeg Command

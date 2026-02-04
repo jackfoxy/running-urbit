@@ -76,8 +76,9 @@ Many stdlib functions have **jets** (C implementations) for performance:
 ::  ++  reap - Repeat element N times
 (reap 3 'x')  ::  ~['x' 'x' 'x']
 
-::  ++  runt - Repeat element  from atom
-(runt [3 'x'] ~['y'])  ::  ~['x' 'x' 'x' 'y']
+::  ++  runt - Prepend character repeatedly to tape
+::  Signature: |=([[a=@ b=@] c=tape])
+(runt [3 'x'] "y")  ::  "xxxy"
 ```
 
 ### Higher-Order List Functions
@@ -113,15 +114,14 @@ Many stdlib functions have **jets** (C implementations) for performance:
 |=([a=@ud b=@ud] (lth a b))
 ::  ~[1 1 3 4 5]
 
-::  ++  find - Find first matching
-%+  find  ~[1 2 3 4 5]
-|=(n=@ud (gth n 3))
-::  `4
+::  ++  find - Find sublist in list
+::  Signature: |=([nedl=(list) hstk=(list)]) returns (unit @ud)
+(find ~[2 3] ~[1 2 3 4])  ::  [~ 1] (index where sublist starts)
+(find ~[5 6] ~[1 2 3 4])  ::  ~ (not found)
 
-::  ++  hunt - Find first or last matching
-%+  hunt  ~[1 2 3 4 5]
-|=(n=@ud =(0 (mod n 2)))
-::  `2 (first even)
+::  ++  hunt - Pick first of two units based on ordering function
+::  Signature: |*([ord=$-(^ ?) a=(unit) b=(unit)])
+(hunt lth `3 `5)  ::  `3 (picks lesser)
 ```
 
 ### List Predicates
@@ -153,11 +153,12 @@ Many stdlib functions have **jets** (C implementations) for performance:
 [(mul n 2) (add state n)]
 ::  [~[2 4 6] 6]  ::  [results final-state]
 
-::  ++  spun - Spin variant
+::  ++  spun - Spin variant (takes gate-building gate)
+::  Gate takes (item, state) same as spin
 %+  spun  ~[1 2 3]
-|=  [state=@ud n=@ud]
-[(add state n) (mul n 2)]
-::  [6 ~[2 4 6]]
+|=  [n=@ud state=@ud]
+[(mul n 2) (add state n)]
+::  [~[2 4 6] 6]  ::  [results final-state]
 ```
 
 ## 3. Set Operations (Section 2h)
@@ -292,8 +293,8 @@ Many stdlib functions have **jets** (C implementations) for performance:
 ::  ++  cut - Extract slice from atom
 (cut 3 [0 5] 'hello world')  ::  'hello'
 
-::  ++  end - Take last N bits/bytes
-(end 3 5 'hello world')  ::  'hello'
+::  ++  end - Take last N bits/bytes (modern 2-arg bite syntax)
+(end [3 5] 'hello world')  ::  'hello'
 
 ::  ++  met - Measure size
 (met 3 'hello')  ::  5 (bytes)
@@ -338,9 +339,8 @@ Many stdlib functions have **jets** (C implementations) for performance:
 ::  ++  a-co:co - @ud → tape
 (a-co:co 42)  ::  "42"
 
-::  ++  r-co:co - @ud → tape in base
-(r-co:co 16 255)  ::  "ff"
-(r-co:co 2 255)   ::  "11111111"
+::  ++  r-co:co - Render floating-point or formatted number to tape
+::  Used internally by the co core for rendering
 
 ::  ++  v-co:co - @uv → tape
 (v-co:co `@uv`42)  ::  "0v2a"
@@ -395,11 +395,11 @@ Many stdlib functions have **jets** (C implementations) for performance:
 ### Bit Operations
 
 ```hoon
-::  ++  lsh - Left shift
-(lsh 0 3 1)  ::  8 (1 << 3)
+::  ++  lsh - Left shift (modern 2-arg bite syntax)
+(lsh [0 3] 1)  ::  8 (1 << 3)
 
-::  ++  rsh - Right shift
-(rsh 0 2 8)  ::  2 (8 >> 2)
+::  ++  rsh - Right shift (modern 2-arg bite syntax)
+(rsh [0 2] 8)  ::  2 (8 >> 2)
 
 ::  ++  con - Bitwise OR
 (con 0b1100 0b1010)  ::  0b1110
@@ -410,8 +410,9 @@ Many stdlib functions have **jets** (C implementations) for performance:
 ::  ++  mix - Bitwise XOR
 (mix 0b1100 0b1010)  ::  0b0110
 
-::  ++  not - Bitwise NOT (specific size)
+::  ++  not - Bitwise NOT (specific size, modern bite syntax)
 (not 0 3 0b101)  ::  0b010
+::  Note: 'not' still uses 3-argument syntax
 ```
 
 ## 7. Parsing (Section 5)
@@ -438,10 +439,10 @@ Many stdlib functions have **jets** (C implementations) for performance:
 (scan "*" tar)  ::  '*'
 
 ::  ++  gap - Whitespace (1+ spaces/newlines)
-(scan "   " gap)  ::  ~[' ' ' ' ' ']
+(scan "   " gap)  ::  ~ (produces null)
 
-::  ++  gon - Whitespace (0+ spaces/newlines)
-(scan "" gon)  ::  ~
+::  ++  gon - Matches backslash-newline-slash sequence
+::  Used in tall-form Hoon parsing, NOT general whitespace
 
 ::  ++  prn - Printable character
 (scan "a" prn)  ::  'a'
@@ -451,9 +452,6 @@ Many stdlib functions have **jets** (C implementations) for performance:
 
 ::  ++  hex - Hexadecimal number
 (scan "2a" hex)  ::  42
-
-::  ++  viz - Base64
-(scan "YQ==" viz)  ::  'a'
 
 ::  ++  sym - Symbol
 (scan "hello" sym)  ::  %hello
@@ -478,7 +476,8 @@ Many stdlib functions have **jets** (C implementations) for performance:
 (scan "aaa" (plus (just 'a')))  ::  "aaa"
 
 ::  ++  stir - Fold with parser
-(scan "123" (stir 0 add dem))  ::  6
+::  dem parses complete decimal numbers, so each parse consumes "123" as 123
+(scan "123" (stir 0 add dem))  ::  123
 
 ::  ++  cook - Transform result
 (scan "42" (cook |=(n=@ud (mul n 2)) dem))  ::  84
@@ -522,17 +521,17 @@ Many stdlib functions have **jets** (C implementations) for performance:
 ::  ++  mug - 32-bit hash
 (mug 'hello')  ::  3.736.752.863
 
-::  ++  sham - 256-bit hash (SHA-256)
-(sham 'hello')  ::  Large @uvH
+::  ++  sham - 128-bit noun hash (@uvH)
+(sham 'hello')  ::  @uvH hash
 
 ::  ++  shax - SHA-256 hash
 (shax 'hello')  ::  @ux hash
 
-::  ++  shas - HMAC-SHA-256
+::  ++  shas - Salted hash (NOT HMAC)
 (shas 'key' 'message')  ::  @ux
 
-::  ++  shal - SHA-512 hash
-(shal 'hello')  ::  @ux
+::  ++  shal - SHA-512 hash (takes length and data)
+(shal (met 3 'hello') 'hello')  ::  @ux
 ```
 
 ## 9. Finding Functions

@@ -13,6 +13,8 @@ Master Hoon generators including naked generators, %say generators, %ask generat
 
 Generators are Hoon programs that produce a value and exit. They're simpler than Gall agents, perfect for CLI tools, data processing, and testing.
 
+> **IMPORTANT**: Generators are pure computations. They cannot make HTTP requests, send pokes, produce Gall cards, or cause side effects. For operations requiring effects (network requests, pokes, subscriptions), use threads (spider) or Gall agents.
+
 ## Learning Objectives
 
 1. Understand generator types and use cases
@@ -69,12 +71,14 @@ scan
 ### Basic Example
 
 ```hoon
-::  /gen/timestamp.hoon
+::  /gen/add-two.hoon
 ::
-::  Get current timestamp
+::  Simple computation (naked generators have no bowl access)
 ::
-now
+(add 2 2)
 ```
+
+> **Note**: Naked generators do not have access to the bowl (no `now`, `eny`, `bec`). They can only perform pure computations or scries. Use a `%say` generator if you need system data like the current time.
 
 ### With Computation
 
@@ -158,6 +162,8 @@ computation
 
 #### Optional Args
 
+Optional arguments use bunt (default) values, not units. When the user omits an optional argument, it receives its type's default value (e.g., `0` for `@ud`, `''` for `@t`).
+
 ```hoon
 ::  /gen/power.hoon
 :-  %say
@@ -166,13 +172,17 @@ computation
         [exp=@ud ~]
     ==
 :-  %noun
-=/  exponent  ?~(exp 2 u.exp)
+::  exp defaults to 0 (bunt of @ud) when omitted
+::  Use a sentinel check or provide a sensible default
+=/  exponent  ?:(=(exp 0) 2 exp)
 (pow base exponent)
 ```
 
 **Usage**:
-- `+power 5` → `25` (default exp=2)
+- `+power 5` → `25` (exp defaults to bunt 0, treated as 2)
 - `+power 5, =exp 3` → `125`
+
+> **Note**: Optional args are NOT units. Do not use the `?~(exp default u.exp)` pattern -- `exp` is a bare `@ud`, not a `(unit @ud)`. The third tuple in the `%say` gate sample holds optional arguments that receive their type's bunt value when omitted.
 
 #### Using System Data
 
@@ -209,7 +219,9 @@ computation
 
 ## 4. %ask Generators
 
-### Interactive Input
+> **WARNING**: `%ask` generators are poorly documented and rarely used in practice. The `readline`/`print` API shown below may not match actual Urbit implementations and varies across runtime versions. The examples here are illustrative of the intended pattern but may not compile as-is. Prefer `%say` generators for most use cases. If you need interactive input, consider using a Gall agent with a front-end instead.
+
+### Interactive Input (Illustrative)
 
 ```hoon
 :-  %ask
@@ -226,7 +238,7 @@ computation
 `[(crip name) age]
 ```
 
-### Multi-Step Wizard
+### Multi-Step Wizard (Illustrative)
 
 ```hoon
 :-  %ask
@@ -274,21 +286,22 @@ computation
 =(test-data back)
 ```
 
-### Pattern 3: Batch Operations
+### Pattern 3: Batch Data Generation
+
+> **Note**: Generators cannot produce Gall cards or effects. They are pure computations. For operations requiring pokes, subscriptions, or other side effects, use threads (spider) or Gall agents.
 
 ```hoon
-::  /gen/batch-poke.hoon
+::  /gen/batch-data.hoon
+::  Generate a list of test data entries
 :-  %say
-|=  [[now=@da eny=@uvJ bec=beak] [app=@tas count=@ud ~] ~]
+|=  [[now=@da eny=@uvJ bec=beak] [count=@ud ~] ~]
 :-  %noun
-=/  pokes  *(list card)
+=/  result  *(list [@ud @t])
 =/  idx  0
 |-
 ?:  =(idx count)
-  (flop pokes)
-=/  poke
-  [%pass /batch/(scot %ud idx) %agent [p.bec app] %poke %noun !>(idx)]
-$(idx +(idx), pokes [poke pokes])
+  (flop result)
+$(idx +(idx), result [[idx (scot %ud idx)] result])
 ```
 
 ### Pattern 4: System Query
@@ -332,22 +345,16 @@ $(len (dec len), result [val result])
 (result-to-json processed)
 ```
 
-### API Testing
+### Scrying Agent State
+
+> **Note**: Generators cannot make HTTP requests or produce side effects. They are pure computations. For HTTP requests, use threads (spider) or Gall agents via Iris. Generators can, however, scry into agent state.
 
 ```hoon
-::  /gen/test-api.hoon
+::  /gen/check-agent.hoon
 :-  %say
-|=  [[now=@da eny=@uvJ bec=beak] [endpoint=@t ~] ~]
+|=  [[now=@da eny=@uvJ bec=beak] [app=@tas ~] ~]
 :-  %noun
-=/  url  (cat 3 'http://localhost:8080/' endpoint)
-=/  request
-  :*  method='GET'
-      url=url
-      header-list=~
-      body=~
-  ==
-%+  send-http-request  request
-|=(response=* (process-response response))
+.^(vase %gx /(scot %p p.bec)/[app]/(scot %da now)/dbug/state/noun)
 ```
 
 ### State Migration Helper

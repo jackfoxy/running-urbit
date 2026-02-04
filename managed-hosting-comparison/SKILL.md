@@ -1,6 +1,6 @@
 ---
 name: managed-hosting-comparison
-description: Detailed comparison of Urbit managed hosting providers including Tlon, Red Horizon, UrbitHost, and self-hosting options with 2025 pricing, features, SLAs, migration procedures, and decision frameworks. Use when evaluating hosting options, comparing providers, planning migrations, or making build-vs-buy decisions.
+description: Detailed comparison of Urbit managed hosting providers including Tlon, Red Horizon, and self-hosting options with 2025 pricing, features, SLAs, migration procedures, and decision frameworks. Use when evaluating hosting options, comparing providers, planning migrations, or making build-vs-buy decisions.
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -13,19 +13,19 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 
 | Provider | Cost | SLA | Support | Custom Apps | Dojo Access | Best For |
 |----------|------|-----|---------|-------------|-------------|----------|
-| **Tlon** | Free | Best-effort | Email | No | No | New users, social |
+| **Tlon** | Free tier + ~$20/mo paid | Best-effort | Email | No | No | New users, social |
 | **Red Horizon** | FREE | 99.99% | Professional | Limited | Limited | Business, reliability |
-| **UrbitHost** | $20-40/mo | 99.9% | Email/ticket | Limited | No | Enterprise, HA |
 | **Self-Hosting** | Hardware + $5/mo | User | Community | Yes | Yes | Technical, privacy |
 | **VPS** | $12-24/mo | 99.9% | Provider | Yes | Yes | Developers, control |
 
 ## Detailed Comparisons
 
 ### Tlon Hosting
-**Pros**: Free, official, mobile apps, waitlist access
-**Cons**: No dojo, limited apps, no SLA, export delays
+**Pros**: Official, mobile apps, free tier available, paid plans (~$20/mo) for additional features and reliability
+**Cons**: No dojo, limited apps, no SLA on free tier, export delays
 **Ideal**: Casual users, social networking, exploration
 **Migration**: Email support@tlon.io for pier import/export
+**Note**: Tlon now offers paid hosting plans (~$20/mo) in addition to the free tier.
 
 ### Red Horizon
 **Pros**: Professional SLA, crypto-native, security-focused, backup included, FREE hosting
@@ -33,11 +33,9 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 **Ideal**: Businesses, uptime-critical apps, professional support needs
 **Pricing**: FREE (users provide valuable insights for long-term vision of scalable Urbit hosting for millions)
 
-### UrbitHost
-**Pros**: Kubernetes HA, automatic failover, enterprise-grade
-**Cons**: Higher cost, limited customization
-**Ideal**: Mission-critical, multi-ship orgs, zero-downtime requirements
-**Tech**: K8s stateful sets, permanent volumes, auto-failover
+### UrbitHost (Absorbed into Tlon Hosting)
+**Note**: UrbitHost is no longer an independent provider. Its hosting capabilities were absorbed into Tlon Hosting. Users previously on UrbitHost should refer to the Tlon Hosting section above.
+**Legacy Tech**: K8s stateful sets, permanent volumes, auto-failover
 
 ### Native Planet (Self-Hosting)
 **Pros**: Full control, privacy, multi-ship (GroundSeg), one-time hardware cost
@@ -55,8 +53,8 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 
 **Start Here**: What's your priority?
 
-1. **Cost = $0** → Tlon (waitlist)
-2. **Uptime SLA critical** → Red Horizon or UrbitHost
+1. **Cost = $0** → Tlon (free tier) or Red Horizon
+2. **Uptime SLA critical** → Red Horizon or Tlon (paid plan)
 3. **Full control needed** → VPS or Self-Hosting
 4. **Non-technical user** → Tlon or Red Horizon
 5. **Privacy paramount** → Self-Hosting
@@ -68,29 +66,25 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 **Backup/Recovery**:
 - Tlon: Manual export request
 - Red Horizon: Automated, included
-- UrbitHost: Automated (K8s snapshots)
 - Self-Hosting: User-managed
 - VPS: User-managed
 
 **Networking**:
 - Tlon: Automatic (tlon.network URLs)
 - Red Horizon: Custom domains supported
-- UrbitHost: Custom domains
 - Self-Hosting: StarTram or Anchor
 - VPS: arvo.network or custom (user-configured)
 
 **Monitoring**:
 - Tlon: Provider-managed (no user access)
 - Red Horizon: Provider dashboards
-- UrbitHost: Provider metrics
 - Self-Hosting: User-configured (Prometheus/Grafana)
 - VPS: User-configured
 
 ## Pricing Summary (Annual)
 
-- **Tlon**: $0/year
+- **Tlon**: $0/year (free tier) or ~$240/year (paid plan at ~$20/mo)
 - **Red Horizon**: $0/year (FREE)
-- **UrbitHost**: $240-480/year
 - **Self-Hosting**: $300-800 (Year 1 hardware) + $60-120/year (StarTram)
 - **VPS (Hetzner)**: $78/year
 - **VPS (DigitalOcean)**: $288/year
@@ -99,9 +93,9 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 
 - Tlon: https://tlon.io
 - Red Horizon: https://redhorizon.com
-- UrbitHost interview: https://urbit.org/blog/urbithost-interview
+- UrbitHost (historical): https://urbit.org/blog/urbithost-interview
 - Native Planet: https://www.nativeplanet.io
 
 ## Summary
 
-Managed hosting options span free (Tlon waitlist, Red Horizon) to professional ($20-40/mo UrbitHost) to self-managed ($6-24/mo VPS, $300+ hardware self-hosting). Decision factors: budget (Tlon/Red Horizon free, VPS $6+, managed $20+), technical expertise (managed low, VPS medium, self-hosting high), control needs (self-hosting > VPS > managed), and uptime requirements (managed hosting SLA 99.9-99.99% > VPS 99.9% > self-hosting variable). Best path: Tlon (explore) → VPS (learn) → choose managed (convenience) or self-hosting (privacy/scale).
+Managed hosting options span free (Tlon free tier, Red Horizon) to paid (~$20/mo Tlon paid plan) to self-managed ($6-24/mo VPS, $300+ hardware self-hosting). UrbitHost was absorbed into Tlon Hosting. Decision factors: budget (Tlon free tier/Red Horizon free, VPS $6+, Tlon paid ~$20/mo), technical expertise (managed low, VPS medium, self-hosting high), control needs (self-hosting > VPS > managed), and uptime requirements (managed hosting SLA 99.9-99.99% > VPS 99.9% > self-hosting variable). Best path: Tlon (explore) → VPS (learn) → choose managed (convenience) or self-hosting (privacy/scale).

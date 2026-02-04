@@ -1,8 +1,8 @@
 ---
 name: hoon-review-workflow
+description: Comprehensive Hoon code review workflow covering quality, security, performance, and maintainability with actionable feedback
 user-invocable: true
 disable-model-invocation: false
-Comprehensive Hoon code review workflow covering quality, security, performance, and maintainability with actionable feedback 
 ---
 
 # Hoon Code Review Command

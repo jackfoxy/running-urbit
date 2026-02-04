@@ -1,8 +1,8 @@
 ---
 name: optimize-nock-performance-workflow
+description: Systematic performance optimization workflow including profiling, bottleneck identification, jetting, and benchmarking.
 user-invocable: true
 disable-model-invocation: false
-Systematic performance optimization workflow including profiling, bottleneck identification, jetting, and benchmarking. 
 ---
 
 # Optimize Nock Performance Command
@@ -97,7 +97,7 @@ Systematic performance optimization workflow including profiling, bottleneck ide
    ```
 2. **Build jet registry**:
    - Register formula → jet mappings
-   - Implement hint processing (Rule 10: %fast hint)
+   - Implement hint processing (Rule 11: %fast hint)
    - Add state management (cold/warm/hot)
 3. **Integrate with evaluator**:
    - Check for jet before Nock evaluation

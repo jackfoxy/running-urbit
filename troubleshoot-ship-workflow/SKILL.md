@@ -1,8 +1,8 @@
 ---
 name: troubleshoot-ship-workflow
+description: Systematic diagnostic workflows for common Urbit issues with 6 decision trees covering boot, memory, network, OTA, performance, and pier corruption
 user-invocable: true
 disable-model-invocation: false
-Systematic diagnostic workflows for common Urbit issues with 6 decision trees covering boot, memory, network, OTA, performance, and pier corruption 
 ---
 
 # Troubleshoot Ship Command
@@ -153,10 +153,12 @@ System Context:
     │ Message       │
     └───────┬───────┘
             │
-            ├─► "out of loom" - Ship hit 2GB loom limit
-            │   └─► Loom is Urbit's memory model (2GB max)
-            │       ├─► Cannot increase loom size (architectural limit)
-            │       └─► Must reduce ship state size (proceed below)
+            ├─► "out of loom" - Ship hit loom memory limit
+            │   └─► Loom is Urbit's memory arena (default 2GB with --loom 31)
+            │       ├─► Increase loom size: urbit --loom 32 pier/ (4GB)
+            │       ├─► Or --loom 33 for 8GB (requires sufficient system RAM)
+            │       ├─► NOTE: Must use same --loom value on every boot
+            │       └─► Also reduce ship state size (proceed below)
             │
             └─► "bail: meme" - General memory error
                 └─► System RAM exhaustion or loom full
@@ -246,7 +248,7 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
 
 **Success Criteria**:
 - [ ] Ship boots successfully
-- [ ] |mass shows <1.8GB usage (safe margin below 2GB limit)
+- [ ] |mass shows healthy memory usage (well within configured loom size)
 - [ ] No "out of loom" errors for 24 hours
 - [ ] Regular |pack scheduled (weekly)
 
@@ -547,10 +549,11 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
             │       │   └─► |pack  # Quick defragmentation
             │       │   └─► Or |meld  # Aggressive deduplication (slow)
             │       │
-            │       └─► Step 3: Clean logs
-            │           └─► Safe to remove old logs:
-            │               rm -f pier/.urb/log/*  # Old runtime logs
-            │           └─► Event log is immutable (DO NOT DELETE)
+            │       └─► Step 3: Check for large files
+            │           └─► WARNING: .urb/log/ contains the EVENT LOG
+            │           └─► NEVER delete .urb/log/* (destroys ship irreversibly)
+            │           └─► Check for large snapshot files: du -sh pier/.urb/chk/
+            │           └─► Run |pack or |meld to reduce state size
             │
             └─► Slow Web Interface
                 └─► Landscape/web UI loading slowly
@@ -654,7 +657,7 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
             │   └─► Severe corruption (restoration needed)
             │       │
             │       ├─► Step 1: Attempt replay (if partial event log damage)
-            │       │   └─► urbit-worker replay pier/  # Replay events
+            │       │   └─► urbit play pier/  # Replay events
             │       │   └─► If fails, event log severely damaged
             │       │
             │       ├─► Step 2: Restore from backup

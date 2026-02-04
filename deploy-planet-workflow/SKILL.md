@@ -1,8 +1,8 @@
 ---
 name: deploy-planet-workflow
+description: Complete bare-metal planet deployment workflow from system assessment to production validation with 10 orchestrated phases
 user-invocable: true
 disable-model-invocation: false
-Complete bare-metal planet deployment workflow from system assessment to production validation with 10 orchestrated phases 
 ---
 
 # Deploy Planet Command

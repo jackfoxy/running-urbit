@@ -1,8 +1,8 @@
 ---
 name: deploy-vps-planet-workflow
+description: Automated VPS planet deployment workflow with provider-specific optimizations, cloud-native integrations, and production hardening
 user-invocable: true
 disable-model-invocation: false
-Automated VPS planet deployment workflow with provider-specific optimizations, cloud-native integrations, and production hardening 
 agents:
   - vps-deployment-specialist
 skills:

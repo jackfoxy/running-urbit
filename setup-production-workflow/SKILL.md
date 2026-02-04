@@ -1,8 +1,8 @@
 ---
 name: setup-production-workflow
+description: Comprehensive 20-phase production hardening workflow for Urbit ships with enterprise security, monitoring, and operational excellence
 user-invocable: true
 disable-model-invocation: false
-Comprehensive 20-phase production hardening workflow for Urbit ships with enterprise security, monitoring, and operational excellence 
 ---
 
 # Setup Production Command

@@ -1,8 +1,8 @@
 ---
 name: setup-cicd-pipeline-workflow
+description: Automated CI/CD pipeline setup for Urbit ship deployments, OTA updates, and infrastructure-as-code workflows
 user-invocable: true
 disable-model-invocation: false
-Automated CI/CD pipeline setup for Urbit ship deployments, OTA updates, and infrastructure-as-code workflows 
 agents:
   - vps-deployment-specialist
 skills:

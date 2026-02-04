@@ -191,12 +191,9 @@ Functions are first-class values:
 #### Find - Locate Element
 
 ```hoon
-::  find first matching
-%+  find  ~[1 2 3 4 5]
-|=(n=@ud (gth n 3))
-::  `4
-
-::  Returns unit (@ud) - ~ if not found
+::  find sublist in list (returns index as unit)
+(find ~[3 4] ~[1 2 3 4 5])  ::  [~ 2]
+(find ~[6 7] ~[1 2 3 4 5])  ::  ~ (not found)
 ```
 
 ## 4. Function Composition
@@ -223,20 +220,16 @@ Functions are first-class values:
 result  ::  20
 ```
 
-### Compose with `=~`
+### Compose with Nesting
 
-Chain multiple transformations:
+Chain multiple transformations by nesting calls:
 
 ```hoon
-=~  "hello"
-    trip        ::  @t → tape
-    cass        ::  lowercase
-    crip        ::  tape → @t
-==
-::  'hello'
+::  Compose by nesting function calls:
+(crip (cass (trip 'HELLO')))  ::  'hello'
 
-::  Equivalent to:
-(crip (cass (trip "hello")))
+::  Note: =~ chains expressions where each uses the previous as subject.
+::  It does NOT work as a simple function pipeline like the above.
 ```
 
 ### Point-Free Style
@@ -432,27 +425,27 @@ Transform multi-argument function into chain of single-argument functions:
 (add-5 10)  ::  15
 ```
 
-### Partial Application with `curr`
+### Partial Application with `cury`
 
-Fix first argument:
+Fix first (left) argument:
 
 ```hoon
-::  curr: fix first argument
-=/  add-10  (curr add 10)
+::  cury: curry left (fix first argument)
+=/  add-10  (cury add 10)
 (add-10 5)  ::  15
 
 ::  Practical use
-=/  double-all  (curr turn |=(n=@ud (mul n 2)))
+=/  double-all  (cury turn |=(n=@ud (mul n 2)))
 (double-all ~[1 2 3])  ::  ~[2 4 6]
 ```
 
-### Partial Application with `cury`
+### Partial Application with `curr`
 
-Fix last argument:
+Fix last (right) argument:
 
 ```hoon
-::  cury: fix last argument
-=/  add-to-10  (cury add 10)
+::  curr: curry right (fix second/last argument)
+=/  add-to-10  (curr add 10)
 (add-to-10 5)  ::  15
 ```
 
@@ -618,12 +611,8 @@ default-value
 ++  process-user-input
   |=  input=@t
   ^-  @ud
-  =~  input
-      trip          ::  @t → tape
-      cass          ::  lowercase
-      (rash (jest 'number: '))  ::  parse prefix
-      (scan dem)    ::  parse number
-  ==
+  =/  text  (cass (trip input))
+  (scan text dem)
 ```
 
 ### Error Handling Pipeline

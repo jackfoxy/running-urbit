@@ -26,66 +26,58 @@ Speedup: 1000-10000x
 - **Correctness**: Must compute identical results
 - **Transparency**: Nock semantics unchanged
 
-## Hint System (Rules 10-11)
+## Hint System (Rule 11)
 
-### Rule 10: Static Hints
+### Rule 11: Hint (Static and Dynamic)
 ```
-*[a 10 [b c] d] → nock(a, d)  # Ignore hint, evaluate body
-```
-
-**%fast Hint** (jet registration):
-```
-[10 [[1 %fast] formula] body]
-
-Tells runtime: "formula has a jet, use it"
+*[a 11 b c]      → *[a c]     # Static hint (b is atom tag)
+*[a 11 [b c] d]  → *[a d]     # Dynamic hint (evaluates c as clue)
 ```
 
-### Rule 11: Dynamic Hints
+**%fast Hint** (jet registration, dynamic):
 ```
-*[a 11 b c] → nock(a, c)  # Reserved for jetting
+[11 [%fast [1 %add]] body]
+
+Tells runtime: "this core implements %add, use native jet"
 ```
+
+### Rule 10: Edit (NOT hints)
+```
+*[a 10 [b c] d] → #[b *[a c] *[a d]]
+```
+Rule 10 is EDIT (tree mutation), not hints. It evaluates target `d`, evaluates value `c`, then replaces the subtree at axis `b` in the target with the value.
+
+### Actively Used Hint Tags
+- **%fast**: Jet registration (tells runtime a core has a native implementation)
+- **%memo**: Memoization (cache computation results)
+- **%spot**: Source location (file/line for stack traces)
+- **%mean**: Error context (descriptive crash messages)
+- **%slog**: Debug print (emit debug output during evaluation)
 
 ## Cold/Hot/Warm States
 
-### Cold State (Never Jetted)
-```rust
-impl JetRegistry {
-    fn execute_cold(&self, formula: &Noun) -> Noun {
-        let nock_result = nock(subject, formula);
-        let jet_result = self.jets[formula](subject);
+In Urbit's jet system (as implemented in Vere), cold/warm/hot refer to different layers of the jet state, not validation frequency:
 
-        assert_eq!(nock_result, jet_result);  // Always validate
-        jet_result
-    }
-}
+### Cold State (Persistent Jet Registrations)
+The cold state is the **persistent** record of jet registrations that survives across snapshots (i.e., stored on disk). When a core is registered with a %fast hint, the association between the core's identity and its jet is recorded in the cold state. This persists across restarts.
+
+### Warm State (Transient Computed State)
+The warm state is **transient** and computed from the cold state at startup. It contains the lookup tables and caches needed to quickly match a core to its jet at runtime. Rebuilt whenever the cold state changes or the runtime restarts.
+
+### Hot State (Static Jet Dashboard)
+The hot state is the **static** jet dashboard compiled into the runtime binary. It contains the actual native C/Rust function pointers for each jet. This does not change at runtime -- it is fixed at compile time.
+
+### How They Work Together
 ```
+1. Hot state: "Here are all the native jet functions we have"
+2. Cold state: "Here are all the cores registered to use jets" (persisted)
+3. Warm state: "Here is the fast-lookup table matching cores to jets" (computed)
 
-**Use**: Development, untrusted jets, debugging
-
-### Warm State (Occasionally Validated)
-```rust
-fn execute_warm(&mut self, formula: &Noun) -> Noun {
-    if self.validation_counter % 1000 == 0 {
-        // Validate every 1000th execution
-        let nock_result = nock(subject, formula);
-        let jet_result = self.jets[formula](subject);
-        assert_eq!(nock_result, jet_result);
-    }
-
-    self.jets[formula](subject)  // Trust jet most of the time
-}
+At runtime:
+  - %fast hint fires → registration added to cold state
+  - Cold state change → warm state recomputed
+  - Core encountered → warm state lookup → hot state function pointer → native execution
 ```
-
-**Use**: Production with periodic validation
-
-### Hot State (Fully Trusted)
-```rust
-fn execute_hot(&self, formula: &Noun) -> Noun {
-    self.jets[formula](subject)  // Never validate, always trust
-}
-```
-
-**Use**: Verified jets in production
 
 ## Jet Registration
 
@@ -96,16 +88,13 @@ use std::collections::HashMap;
 type Jet = fn(&Noun) -> Result<Noun, NockError>;
 
 struct JetRegistry {
-    jets: HashMap<Noun, Jet>,
-    state: HashMap<Noun, JetState>,
+    jets: HashMap<Noun, Jet>,       // hot: available native implementations
+    registrations: HashMap<Noun, Noun>, // cold: persistent core-to-jet mappings
 }
-
-enum JetState { Cold, Warm, Hot }
 
 impl JetRegistry {
     fn register(&mut self, formula: Noun, jet: Jet) {
         self.jets.insert(formula.clone(), jet);
-        self.state.insert(formula, JetState::Cold);
     }
 
     fn accelerate(&self, subject: &Noun, formula: &Noun) -> Option<Noun> {
@@ -157,7 +146,9 @@ fn jet_add(subject: &Noun) -> Result<Noun, NockError> {
 
 ## Validation Strategies
 
-### Always Validate (Cold)
+Jet validation is a separate concern from the cold/warm/hot state model. These are common strategies:
+
+### Always Validate (Development/Debug)
 ```rust
 fn validate_always(formula: &Noun, subject: &Noun) -> Noun {
     let nock_result = nock(subject.clone(), formula.clone());
@@ -168,7 +159,7 @@ fn validate_always(formula: &Noun, subject: &Noun) -> Noun {
 }
 ```
 
-### Statistical Sampling (Warm)
+### Statistical Sampling (Testing)
 ```rust
 fn validate_sampled(formula: &Noun, subject: &Noun, rate: f64) -> Noun {
     if rand::random::<f64>() < rate {
@@ -181,24 +172,25 @@ fn validate_sampled(formula: &Noun, subject: &Noun, rate: f64) -> Noun {
 }
 ```
 
-### Never Validate (Hot)
+### Trust (Production)
 ```rust
 fn validate_never(formula: &Noun, subject: &Noun) -> Noun {
-    jet(subject)  // Full trust
+    jet(subject)  // Full trust in production
 }
 ```
 
 ## Performance Impact
 
-### Benchmark Results
+### Benchmark Results (Illustrative/Approximate)
+Note: These numbers are approximate and illustrative of relative magnitudes. Actual performance depends on input size, implementation, and hardware.
 ```
-Operation    | Nock Time | Jet Time | Speedup
--------------|-----------|----------|--------
-Increment    | 100 ns    | 10 ns    | 10x
-Decrement    | 10 ms     | 10 ns    | 1,000,000x
-Add          | 1 ms      | 10 ns    | 100,000x
-Multiply     | 100 ms    | 10 ns    | 10,000,000x
-SHA-256      | minutes   | 1 ms     | 1,000,000,000x
+Operation    | Nock Time   | Jet Time  | Approx Speedup
+-------------|-------------|-----------|----------------
+Increment    | ~100 ns     | ~10 ns    | ~10x
+Decrement    | ~10 ms      | ~10 ns    | ~1,000,000x
+Add          | ~1 ms       | ~10 ns    | ~100,000x
+Multiply     | ~100 ms     | ~10 ns    | ~10,000,000x
+SHA-256      | very slow   | ~1 ms     | orders of magnitude
 ```
 
 ### Jet Profitability
@@ -210,4 +202,4 @@ High-value jets (biggest speedups):
 
 ## Summary
 
-Jets accelerate Nock by replacing formulas with native code (100-1,000,000x speedup). Hint system: Rule 10 (%fast hint registers jets), Rule 11 (reserved for runtime). States: cold (always validate), warm (periodic validation), hot (never validate, full trust). High-value jets: decrement (O(n)→O(1)), arithmetic (O(n²)→O(1)), cryptography (exponential→linear). Validation strategy: start cold, validate extensively, promote to warm after testing, promote to hot for verified production jets.
+Jets accelerate Nock by replacing formulas with native code. Hint system: Rule 11 provides hints (%fast registers jets, %memo enables memoization, %spot/%mean/%slog for debugging). Rule 10 is EDIT (tree mutation), not hints. Jet states: cold = persistent jet registrations across snapshots, warm = transient computed lookup tables, hot = static jet dashboard compiled into binary. High-value jets: decrement (O(n) to O(1)), arithmetic, cryptography. Validation is a separate concern from the cold/warm/hot state model.

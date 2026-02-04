@@ -13,26 +13,28 @@ Complete reference for Nock's six prefix operators that provide all computationa
 
 | Operator | Name | Purpose | Example |
 |----------|------|---------|---------|
-| `?` | Type Test | Cell vs Atom | `?[42]` → `1` (is atom) |
+| `?` | Type Test | Cell vs Atom | `?[42]` → `1` (not a cell) |
 | `+` | Increment | Add 1 | `+[41]` → `42` |
 | `=` | Equality | Deep compare | `=[1 1]` → `0` (equal) |
 | `/` | Slot | Tree addressing | `/[2 [a b]]` → `a` |
-| `#` | Edit | Replace (via hints) | Implicit in Rule 10 |
+| `#` | Edit | Tree mutation | `#[2 99 [1 2]]` → `[99 2]` |
 | `*` | Nock | Evaluate formula | `*[subj formula]` → result |
 
 ## `?` - Type Test (Cell vs Atom)
 
 ### Semantics
 ```
-?[atom] → 1  (yes, is atom)
-?[cell] → 0  (no, is cell)
+?[cell] → 0  (yes, is a cell)
+?[atom] → 1  (no, is not a cell)
 ```
+
+The `?` operator tests "is this a cell?" — `0` means yes (is cell), `1` means no (is atom).
 
 ### Implementation
 ```python
 def type_test(noun):
-    """? operator: returns 1 if atom, 0 if cell."""
-    return 1 if is_atom(noun) else 0
+    """? operator: tests 'is this a cell?' — 0=yes, 1=no."""
+    return 0 if is_cell(noun) else 1
 ```
 
 ### Loobean Logic
@@ -44,10 +46,10 @@ Why? Historical Lisp convention where `nil`=false, anything else=true.
 
 ### Examples
 ```
-?[0]        → 1  # Atom
-?[9999]     → 1  # Atom
-?[[1 2]]    → 0  # Cell
-?[[[a] b]]  → 0  # Cell (even nested)
+?[0]        → 1  # Not a cell (atom)
+?[9999]     → 1  # Not a cell (atom)
+?[[1 2]]    → 0  # Yes, is a cell
+?[[[a] b]]  → 0  # Yes, is a cell (even nested)
 ```
 
 ## `+` - Increment
@@ -176,19 +178,46 @@ def slot(subject, axis):
 /[2 atom]         → CRASH     # Cannot slot into atom
 ```
 
-## `#` - Edit (Implicit in Hints)
+## `#` - Edit (Tree Mutation)
 
 ### Semantics
 ```
-# operator only appears implicitly in Rule 10 (hints)
-Used for:
-- Selective replacement in tree
-- Metadata annotations
-- Jet hints
+#[axis value target] → target with subtree at axis replaced by value
+
+#[1 a b]       → a           # Replace whole tree
+#[2 a [b c]]   → [a c]       # Replace head
+#[3 a [b c]]   → [b a]       # Replace tail
+#[2n a b]      → [#[n a /[2 b]] /[3 b]]    # Recurse into head
+#[2n+1 a b]    → [/[2 b] #[n a /[3 b]]]    # Recurse into tail
 ```
 
-### No Direct Usage
-The `#` operator doesn't appear in user formulas directly—it's embedded in Rule 10.
+### Implementation
+```python
+def edit(axis, value, target):
+    """# operator: replace subtree at axis with value."""
+    if axis == 1:
+        return value
+    if is_atom(target):
+        raise NockCrash("edit in atom")
+    if axis == 2:
+        return Cell(value, target.tail)
+    if axis == 3:
+        return Cell(target.head, value)
+    if axis % 2 == 0:
+        return Cell(edit(axis // 2, value, target.head), target.tail)
+    else:
+        return Cell(target.head, edit(axis // 2, value, target.tail))
+```
+
+### Used in Rule 10 (EDIT)
+The `#` operator is the underlying mechanism for Rule 10 (EDIT): `*[a 10 [b c] d]` evaluates target `d`, evaluates value `c`, then uses `#` to edit the result at axis `b` with the value.
+
+### Examples
+```
+#[2 99 [1 2]]      → [99 2]     # Replace head with 99
+#[3 99 [1 2]]      → [1 99]     # Replace tail with 99
+#[4 99 [[1 2] 3]]  → [[99 2] 3] # Replace head of head
+```
 
 ## `*` - Nock (The Evaluator)
 
@@ -290,4 +319,4 @@ def slot_cached(subject_id, axis):
 
 ## Summary
 
-Six Nock operators: `?` (type test: 1=atom, 0=cell), `+` (increment atom, crash cell), `=` (deep equality: 0=equal, 1=not), `/` (tree addressing via binary axis), `#` (editing via hints), `*` (evaluation itself). Loobean logic: 0=yes/true, 1=no/false. Slot navigation: axis 1=root, 2=head, 3=tail, 2n=head of n, 2n+1=tail of n. Crashes: axis 0, slot in atom (axis>1), increment cell. All arithmetic builds from increment; all data access via slot.
+Six Nock operators: `?` (cell test: 0=yes is cell, 1=no is atom), `+` (increment atom, crash cell), `=` (deep equality: 0=equal, 1=not), `/` (tree addressing via binary axis), `#` (tree mutation/edit, used in Rule 10), `*` (evaluation itself). Loobean logic: 0=yes/true, 1=no/false. Slot navigation: axis 1=root, 2=head, 3=tail, 2n=head of n, 2n+1=tail of n. Crashes: axis 0, slot in atom (axis>1), increment cell. All arithmetic builds from increment; all data access via slot.

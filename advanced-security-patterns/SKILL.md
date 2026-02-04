@@ -170,7 +170,7 @@ spec:
         - protocol: TCP
           port: 8080  # Urbit HTTP port
 ---
-# Allow Ames (UDP 34343) from internet
+# Allow Ames (UDP 34543) from internet
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -188,7 +188,7 @@ spec:
             cidr: 0.0.0.0/0  # Allow Ames from any IP
       ports:
         - protocol: UDP
-          port: 34343
+          port: 34543
 ---
 # Deny cross-namespace traffic (paranoid mode)
 apiVersion: networking.k8s.io/v1
@@ -274,32 +274,8 @@ metadata:
 # Baseline: Prevents known privilege escalations
 # Restricted: Heavily restricted (best practice for untrusted workloads)
 
-# Option 2: Using PodSecurityPolicy (deprecated but still in use)
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: urbit-ship-psp
-spec:
-  privileged: false  # No privileged containers
-  allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-    - ALL
-  volumes:
-    - 'configMap'
-    - 'emptyDir'
-    - 'projected'
-    - 'secret'
-    - 'persistentVolumeClaim'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  seLinux:
-    rule: 'RunAsAny'
-  fsGroup:
-    rule: 'RunAsAny'
-  readOnlyRootFilesystem: false  # Urbit needs writable /urbit
+# Note: PodSecurityPolicy (PSP) was removed in Kubernetes v1.25.
+# Use Pod Security Admission (PSA) labels above instead.
 ```
 
 **Testing Isolation:**
@@ -442,7 +418,7 @@ docker run -d \
   --memory="2g" \
   --pids-limit=200 \
   -v /urbit/sampel-palnet:/urbit/sampel-palnet \
-  urbit/urbit:latest
+  nativeplanet/urbit:latest
 ```
 
 **3. Docker Resource Limits (cgroups):**
@@ -453,7 +429,7 @@ version: '3.8'
 
 services:
   sampel-palnet:
-    image: urbit/urbit:latest
+    image: nativeplanet/urbit:latest
     container_name: sampel-palnet
     restart: unless-stopped
 
@@ -590,7 +566,7 @@ resource "digitalocean_firewall" "customer_firewall" {
 
   inbound_rule {
     protocol         = "udp"
-    port_range       = "34343"
+    port_range       = "34543"
     source_addresses = ["0.0.0.0/0", "::/0"]  # Ames from anywhere
   }
 
@@ -721,7 +697,7 @@ spec:
 
       containers:
         - name: urbit
-          image: urbit/urbit:latest
+          image: nativeplanet/urbit:latest
           volumeMounts:
             - name: pier
               mountPath: /urbit
@@ -808,7 +784,7 @@ server {
 
 ### Ames Network Security
 
-**Challenge:** Urbit's Ames protocol (UDP port 34343) is exposed to the internet and vulnerable to DDoS attacks.
+**Challenge:** Urbit's Ames protocol (UDP port 34543) is exposed to the internet and vulnerable to DDoS attacks.
 
 **Mitigation Strategies:**
 
@@ -821,11 +797,11 @@ server {
 -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 # Rate limit NEW Ames connections (max 100 packets/sec per IP)
--A INPUT -p udp --dport 34343 -m state --state NEW -m recent --set --name AMES
--A INPUT -p udp --dport 34343 -m state --state NEW -m recent --update --seconds 1 --hitcount 100 --name AMES -j DROP
+-A INPUT -p udp --dport 34543 -m state --state NEW -m recent --set --name AMES
+-A INPUT -p udp --dport 34543 -m state --state NEW -m recent --update --seconds 1 --hitcount 100 --name AMES -j DROP
 
 # Allow Ames (after rate limiting)
--A INPUT -p udp --dport 34343 -j ACCEPT
+-A INPUT -p udp --dport 34543 -j ACCEPT
 
 # Drop everything else
 -A INPUT -j DROP
@@ -838,8 +814,8 @@ server {
 
 # CloudFlare Spectrum Configuration (via UI or API)
 # - Protocol: UDP
-# - Origin Port: 34343
-# - Proxy Port: 34343
+# - Origin Port: 34543
+# - Proxy Port: 34543
 # - DDoS Protection: Enabled
 # - IP Firewall: Enabled (geo-blocking, rate limiting)
 

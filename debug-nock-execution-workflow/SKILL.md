@@ -1,8 +1,8 @@
 ---
 name: debug-nock-execution-workflow
+description: Systematic debugging workflow for troubleshooting Nock formula execution from error analysis to resolution.
 user-invocable: true
 disable-model-invocation: false
-Systematic debugging workflow for troubleshooting Nock formula execution from error analysis to resolution. 
 ---
 
 # Debug Nock Execution Command

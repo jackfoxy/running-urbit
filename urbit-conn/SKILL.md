@@ -168,6 +168,48 @@ echo "[0 %peel /who]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock
 echo "[0 %peel /v]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
 ```
 
+#### Help - list available commands (%peel /help)
+
+```bash
+echo "[0 %peel /help]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
+#### Runtime info/metrics (%peel /info)
+
+```bash
+echo "[0 %peel /info]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
+#### Check Khan vane status (%peel /khan)
+
+```bash
+echo "[0 %peel /khan]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
+#### |mass output (%peel /mass)
+
+```bash
+echo "[0 %peel /mass]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
+#### Query Ames port (%peel /port/ames)
+
+```bash
+echo "[0 %peel /port/ames]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
+#### Query HTTP port (%peel /port/http)
+
+```bash
+echo "[0 %peel /port/http]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
+#### Query HTTPS port (%peel /port/htls)
+
+```bash
+echo "[0 %peel /port/htls]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+```
+
 ### OTA Management
 
 #### |ota ~bus (enable OTAs from sponsor)

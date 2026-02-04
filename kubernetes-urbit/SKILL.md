@@ -69,7 +69,7 @@ spec:
     spec:
       containers:
       - name: urbit
-        image: tloncorp/urbit:latest
+        image: nativeplanet/urbit:latest
         resources:
           requests:
             memory: "4Gi"
@@ -232,6 +232,8 @@ EOF
 
 ```bash
 # Install via Helm
+## Note: The Helm chart URL below is a placeholder. No official Urbit Helm chart
+## repository exists at this time. Replace with your own chart or a community-maintained one.
 helm repo add urbit https://charts.urbit.example
 helm install sampel-palnet urbit/urbit-ship \
   --set ship.name=sampel-palnet \

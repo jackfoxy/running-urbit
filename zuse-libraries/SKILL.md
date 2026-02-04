@@ -85,7 +85,7 @@ ct)]
   ^-  response
   :*  200
       ~[['Content-Type' 'application/json']]
-      `(as-octs:mimes:html (en-json:html data))
+      `(as-octs:mimes:html (en:json:html data))
   ==
 
 ++  error-response
@@ -104,17 +104,19 @@ ct)]
 =,  enjs:format
 
 ::  Primitives
-(s 'hello')                   ::  String
+::  Note: s+value, b+value, a+value are Hoon sugar for
+::  [%s value], [%b value], [%a value] - NOT enjs:format functions
+[%s 'hello']                  ::  String
 (numb 42)                     ::  Number
-(b %.y)                       ::  Boolean
+[%b %.y]                      ::  Boolean
 ~                             ::  Null
 
 ::  Objects
-(pairs ~[['key' (s 'value')]])
+(pairs ~[['key' [%s 'value']]])
 (frond 'data' (numb 42))      ::  {"data": 42}
 
 ::  Arrays
-(a ~[(numb 1) (numb 2)])
+[%a ~[(numb 1) (numb 2)]]
 
 ::  Complete example
 %-  pairs
@@ -171,11 +173,11 @@ ct)]
 ### JSON Helpers
 
 ```hoon
-::  ++  en-json:html - JSON → cord
-(en-json:html json-value)
+::  ++  en:json:html - JSON → cord
+(en:json:html json-value)
 
-::  ++  de-json:html - Cord → JSON
-(de-json:html '{"key":"value"}')  ::  `json
+::  ++  de:json:html - Cord → JSON
+(de:json:html '{"key":"value"}')  ::  `json
 
 ::  ++  en:json:html - Pretty-print
 (en:json:html json-value)  ::  Formatted tape
@@ -205,12 +207,8 @@ ct)]
 ### File Extensions
 
 ```hoon
-::  ++  mimes:mimes:html - Extension → MIME type
-(~(get by mimes:mimes:html) 'json')
-::  `'application/json'
-
-(~(get by mimes:mimes:html) 'html')
-::  `'text/html'
+::  Note: mimes:mimes:html extension lookup map does not exist.
+::  MIME type handling is done through the mark system instead.
 ```
 
 ## 4. Scry Paths
@@ -248,10 +246,10 @@ ct)]
 ::  SHA-256
 (shax 'message')  ::  @ux hash
 
-::  SHA-512
-(shal 'message')  ::  @ux hash
+::  SHA-512 (takes length and data)
+(shal (met 3 'message') 'message')  ::  @ux hash
 
-::  HMAC-SHA-256
+::  Salted hash (NOT HMAC)
 (shas 'key' 'message')  ::  @ux
 
 ::  SHA-256 of multiple inputs
@@ -285,14 +283,9 @@ ct)]
 ### Symmetric Crypto
 
 ```hoon
-::  AES encryption
-++  encrypt-aes
-  |=  [key=@ux iv=@ux message=@]
-  (en:aes:crypto key iv message)
-
-++  decrypt-aes
-  |=  [key=@ux iv=@ux encrypted=@]
-  (de:aes:crypto key iv encrypted)
+::  Note: aes:crypto does not exist in zuse.hoon.
+::  For symmetric encryption, use crub:crypto which provides
+::  authenticated encryption via the +de and +en arms.
 ```
 
 ## 6. Parsing Helpers
@@ -305,26 +298,20 @@ ct)]
 (de-purl:html url)
 ::  Returns purl structure
 
-+$  purl
-  $:  scheme=@tas
-      host=(list @t)
-      port=(unit @ud)
-      path=(list @t)
-      query=(list [key=@t value=@t])
-      fragment=(unit @t)
-  ==
+::  purl actual type: [p=hart q=pork r=quay]
+::  hart: [p=? q=(unit @ud) r=host]  (secure, port, host)
+::  pork: [p=(unit @ta) q=(list @t)]  (extension, path)
+::  quay: (list [@t @t])              (query parameters)
++$  purl  [p=hart q=pork r=quay]
 ```
 
 ### Query String
 
 ```hoon
-::  ++  en-qury:html - Encode query string
-(en-qury:html ~[['key' 'value'] ['foo' 'bar']])
-::  'key=value&foo=bar'
-
-::  ++  de-qury:html - Parse query string
-(de-qury:html 'key=value&foo=bar')
-::  ~[['key' 'value'] ['foo' 'bar']]
+::  Query string encoding/decoding is handled within
+::  the purl parsing system. There are no standalone
+::  en-qury:html or de-qury:html functions.
+::  Use de-purl:html to parse full URLs including query strings.
 ```
 
 ### Base64
@@ -376,19 +363,16 @@ now                    ::  @da
 ### Mop (Ordered Map)
 
 ```hoon
-::  Create mop
-=/  m  (mo ~[[1 'a'] [2 'b'] [3 'c']])
+::  Note: there is no `mo` constructor for mops.
+::  Use the +on core to create mop operations:
+=/  compare  |=([a=@ud b=@ud] (lth a b))
+=/  mop-on  ((on @ud @t) compare)
 
-::  Operations (similar to map)
-(~(get by m) 1)        ::  `'a'
-(~(put by m) 4 'd')
+::  Build a mop by inserting entries
+=/  m  *((mop @ud @t) compare)
+=/  m  (put:mop-on m [1 'a'])
+=/  m  (put:mop-on m [2 'b'])
 ~(tap by m)            ::  In order
-
-::  Range queries
-++  range
-  |=  [m=(mop @ud @t) start=@ud end=@ud]
-  %+  skim  ~(tap by m)
-  |=([k=@ud v=@t] &((gte k start) (lte k end)))
 ```
 
 ### Jar/Jug Helpers
@@ -445,7 +429,7 @@ now                    ::  @da
       [%api %users ~]
     ?+    method.req  (error-response 405 'Method Not Allowed')
       %'GET'   (get-users)
-      %'POST'  (create-user (de-json:html body.req))
+      %'POST'  (create-user (de:json:html body.req))
     ==
   ==
 ```
@@ -458,7 +442,7 @@ now                    ::  @da
   ^-  response:http
   :*  200
       ~[['Content-Type' 'application/json']]
-      `(as-octs:mimes:html (en-json:html data))
+      `(as-octs:mimes:html (en:json:html data))
   ==
 
 ++  api-success

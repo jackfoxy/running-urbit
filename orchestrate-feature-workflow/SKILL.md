@@ -1,8 +1,8 @@
 ---
 name: orchestrate-feature-workflow
+description: Intelligent end-to-end orchestration for Hoon feature development. Dynamically coordinates design, implementation, review, testing, optimization, and deployment phases with cross-plugin integration.
 user-invocable: true
 disable-model-invocation: false
-Intelligent end-to-end orchestration for Hoon feature development. Dynamically coordinates design, implementation, review, testing, optimization, and deployment phases with cross-plugin integration. 
 ---
 
 # Orchestrate Feature Command

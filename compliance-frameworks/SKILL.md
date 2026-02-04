@@ -1420,7 +1420,7 @@ ISO 27001 is an international standard for Information Security Management Syste
 
 ### Annex A Controls
 
-ISO 27001 Annex A contains 114 security controls across 14 domains. Below are key controls for Urbit deployments.
+ISO 27001:2022 Annex A contains 93 controls organized into 4 themes: Organizational, People, Physical, and Technological. (The earlier 2013 edition had 114 controls across 14 domains.) Below are key controls for Urbit deployments.
 
 #### A.8.1: Inventory of Assets
 
@@ -2113,7 +2113,7 @@ class ComplianceDashboard:
                 <div class="framework-card">
                     <h3>ISO 27001:2022</h3>
                     <p class="status-compliant">✓ CERTIFIED</p>
-                    <p>114/114 Annex A controls implemented</p>
+                    <p>93/93 Annex A controls implemented (2022 edition)</p>
                     <p>Next Audit: 2025-11-01</p>
                 </div>
                 <div class="framework-card">

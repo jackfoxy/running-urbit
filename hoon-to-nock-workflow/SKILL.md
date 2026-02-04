@@ -1,8 +1,8 @@
 ---
 name: hoon-to-nock-workflow
+description: Analyze how Hoon high-level code compiles to Nock assembly for performance optimization and debugging.
 user-invocable: true
 disable-model-invocation: false
-Analyze how Hoon high-level code compiles to Nock assembly for performance optimization and debugging. 
 ---
 
 # Hoon-to-Nock Command

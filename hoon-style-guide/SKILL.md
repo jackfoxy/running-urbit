@@ -340,7 +340,7 @@ false-branch
   |=  [name=@t email=@t]
   ...
 
-::  Internal helpers (prefix with `-` or `_`)
+::  Internal helpers (prefix with `-`)
 ++  -validate
   ...
 --

@@ -70,11 +70,9 @@ Hoon provides multiple serialization formats for different use cases: JSON for w
 
 ```hoon
 ::  JSON → cord
-(en-json:html obj)
-::  '{"name":"Alice","age":30,"active":true}'
-
-::  JSON → tape (pretty-printed)
 (en:json:html obj)
+::  '{"name":"Alice","age":30,"active":true}'
+::  Note: en:json:html returns a cord (@t), not a tape
 ```
 
 ### Decoding JSON from Text
@@ -82,7 +80,7 @@ Hoon provides multiple serialization formats for different use cases: JSON for w
 ```hoon
 ::  Parse JSON from cord
 =/  text  '{"name":"Alice","age":30}'
-=/  parsed  (de-json:html text)
+=/  parsed  (de:json:html text)
 ::  `json (parsed successfully)
 
 ::  Safe parsing with unit
@@ -139,7 +137,7 @@ u.parsed
 Standard library helpers for JSON decoding:
 
 ```hoon
-=/  j  (need (de-json:html '{"x":5,"y":10}'))
+=/  j  (need (de:json:html '{"x":5,"y":10}'))
 
 ::  Extract object
 =,  dejs:format
@@ -160,7 +158,6 @@ point  ::  [x=5 y=10]
 ::  ar - array
 ::  at - array (tuple)
 ::  ou - object (optional keys)
-::  ul - unit
 ```
 
 ### Using `enjs:format`
@@ -177,15 +174,16 @@ Standard library helpers for JSON encoding:
       ['scores' a+~[(numb 10) (numb 20)]]
   ==
 
-(en-json:html json-obj)
+(en:json:html json-obj)
 ::  {"name":"Alice","age":30,"active":true,"scores":[10,20]}
 
 ::  Encoders
-::  s - string
 ::  numb - number
-::  b - boolean
-::  pairs - object
-::  a - array
+::  pairs - object from list of key-json pairs
+::  frond - single key-value object
+::
+::  Note: s+value, b+value, a+value are NOT enjs:format functions.
+::  They are Hoon sugar for [%s value], [%b value], [%a value].
 ```
 
 ## 2. Vases (Runtime Types)
@@ -457,7 +455,7 @@ q.v  ::  Noun (value)
 ++  safe-json-parse
   |=  text=@t
   ^-  (unit json)
-  (de-json:html text)
+  (de:json:html text)
 
 ++  safe-decode-user
   |=  j=json

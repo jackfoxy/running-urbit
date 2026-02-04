@@ -1,8 +1,8 @@
 ---
 name: build-nock-interpreter-workflow
+description: Step-by-step workflow for building production-ready Nock interpreters from language selection through testing and optimization.
 user-invocable: true
 disable-model-invocation: false
-Step-by-step workflow for building production-ready Nock interpreters from language selection through testing and optimization. 
 ---
 
 # Build Nock Interpreter Command
@@ -64,7 +64,7 @@ Complete 8-phase workflow for implementing a Nock virtual machine in your chosen
    - Rules 3-5: Cell test, increment, equality
    - Rule 6: If-then-else
    - Rules 7-9: Composition, push, call
-   - Rules 10-12: Hints (simplified: ignore and evaluate body)
+   - Rule 10: Edit, Rule 11: Hint, Rule 12: Scry
 4. Handle crashes: axis 0, slot in atom, increment cell
 5. Add basic error messages
 

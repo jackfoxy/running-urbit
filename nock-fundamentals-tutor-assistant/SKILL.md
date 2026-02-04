@@ -135,17 +135,17 @@ Rule 9:  [subject a b] +  = a + b
 
 ### 4. Advanced Operators
 
-#### Rule 10: Hint
+#### Rule 10: Edit
+```
+[subject [axis formula target]] = edit(evaluate(subject, formula), axis, evaluate(subject, target))
+```
+Tree editing; replaces part of the evaluated target at the given axis.
+
+#### Rule 11: Hint
 ```
 [subject [hint formula]] = evaluate(subject, formula)
 ```
-Optimization marker; discards hint if formula is cell.
-
-#### Rule 11: Crash
-```
-[subject noun] ! = crash with value noun
-```
-Controlled crash for error handling.
+Optimization hint; evaluates formula and may use hint to guide the runtime.
 
 #### Rule 12: Scry
 ```
@@ -289,8 +289,8 @@ Start with simple rules (0-5), add complexity (6-12) gradually.
 - Build simple evaluator
 
 ### Advanced
-- Implement hints (rule 10)
-- Handle crashes (rule 11)
+- Implement edit (rule 10)
+- Handle hints (rule 11)
 - Add scry (rule 12)
 - Optimize with memoization
 

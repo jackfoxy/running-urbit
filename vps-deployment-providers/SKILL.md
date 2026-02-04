@@ -33,10 +33,10 @@ Choosing the right VPS provider for Urbit ships involves balancing cost, perform
 **Pricing** (2025):
 - CX11: €4.15/mo - 2GB RAM, 20GB SSD, 1 vCPU
 - **CX23: €3.49/mo - 4GB RAM, 40GB SSD, 2 vCPUs** ✅ **BEST VALUE 2025**
-- CX21: €5.83/mo - 4GB RAM, 40GB SSD, 2 vCPUs (older generation)
+- CX22: €5.83/mo - 4GB RAM, 40GB SSD, 2 vCPUs (CX21 was deprecated September 2024, replaced by CX22)
 - CX31: €10.45/mo - 8GB RAM, 80GB SSD, 2 vCPUs
 
-**2025 Update**: New cost-optimized CX23 plan (€3.49/mo for 4GB RAM) offers 40% cost reduction vs CX21 with AMD EPYC-Genoa processors providing 30%+ faster disk/network performance.
+**2025 Update**: New cost-optimized CX23 plan (€3.49/mo for 4GB RAM) offers 40% cost reduction vs CX22 (formerly CX21, deprecated September 2024) with AMD EPYC-Genoa processors providing 30%+ faster disk/network performance.
 
 **Strengths**:
 - **Best price-to-performance ratio** (industry-leading)
@@ -52,7 +52,7 @@ Choosing the right VPS provider for Urbit ships involves balancing cost, perform
 
 **Urbit-Specific**:
 - **Best for**: Budget-conscious deployments, European users
-- Single planet: **CX23 (€3.49/mo = ~$3.75/mo)** or CX21 (€5.83/mo = ~$6.50/mo)
+- Single planet: **CX23 (€3.49/mo = ~$3.75/mo)** or CX22 (€5.83/mo = ~$6.50/mo)
 - GroundSeg (3-5 ships): CX41 (€15.30/mo, 16GB RAM)
 
 **CLI**:
@@ -334,7 +334,7 @@ Based on community benchmarks and performance testing:
 - Already using AWS ecosystem
 - Need AWS service integrations
 - Want fixed pricing (vs EC2)
-- Budget allows ($40/mo for 4GB)
+- Budget allows ($24/mo for 4GB)
 
 ### Choose **OVH** if:
 - European deployment required
@@ -358,11 +358,11 @@ Based on Urbit community tutorials and discussions:
 ## Cost Optimization
 
 **Single Planet** (annual cost):
-- Hetzner CX21: €70/year (~$78/year) ⭐ **Best value**
+- Hetzner CX22: €70/year (~$78/year) ⭐ **Best value**
 - DigitalOcean 4GB: $288/year
 - Linode 4GB: $288/year
 - Vultr 4GB: $288/year
-- AWS Lightsail 4GB: $480/year
+- AWS Lightsail 4GB: $288/year
 
 **Savings strategies**:
 - **Hetzner**: No prepay discount needed (already cheapest)
@@ -398,4 +398,4 @@ Based on Urbit community tutorials and discussions:
 
 ## Summary
 
-VPS provider selection for Urbit ships prioritizes 4GB RAM minimum, SSD storage, and reliable networking. Hetzner offers best value (€5.83/mo), DigitalOcean best beginner experience ($24/mo), Linode best bandwidth and support ($24/mo), Vultr best global reach ($24/mo), and AWS Lightsail best AWS integration ($40/mo). Community recommends DigitalOcean for ease of use, Hetzner for budget deployments. All providers support Urbit's modest requirements (2GB RAM minimum), with decision based on budget, experience level, geographic needs, and ecosystem preferences.
+VPS provider selection for Urbit ships prioritizes 4GB RAM minimum, SSD storage, and reliable networking. Hetzner offers best value (CX23 at €3.49/mo or CX22 at €5.83/mo), DigitalOcean best beginner experience ($24/mo), Linode best bandwidth and support ($24/mo), Vultr best global reach ($24/mo), and AWS Lightsail best AWS integration ($24/mo for 4GB). Community recommends DigitalOcean for ease of use, Hetzner for budget deployments. All providers support Urbit's modest requirements (2GB RAM minimum), with decision based on budget, experience level, geographic needs, and ecosystem preferences.

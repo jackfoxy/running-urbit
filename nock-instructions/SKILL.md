@@ -23,9 +23,9 @@ Complete reference for Nock's 13 reduction rules that define the evaluation sema
 | 7 | `[a 7 b c]` | `*[*[a b] c]` | Composition |
 | 8 | `[a 8 b c]` | `*[[*[a b] a] c]` | Push (extend subject) |
 | 9 | `[a 9 b c]` | `*[*[a c] 2 [0 1] 0 b]` | Call (invoke arm) |
-| 10 | `[a 10 [b c] d]` / `[a 10 b c]` | hint processing | Edit hint |
-| 11 | `[a 11 b c]` | `*[a c]` | Jet hint (reserved) |
-| 12 | `[a 12 b c]` | `/[c a]` | Scry (reserved) |
+| 10 | `[a 10 [b c] d]` | `#[b *[a c] *[a d]]` | Edit (tree mutation) |
+| 11 | `[a 11 b c]` / `[a 11 [b c] d]` | hint processing | Hint (static/dynamic) |
+| 12 | `[a 12 b c]` | `scry(*[a b], *[a c])` | Scry (namespace lookup) |
 
 ## Rule 0: Slot (Tree Addressing)
 
@@ -246,8 +246,8 @@ Complete reference for Nock's 13 reduction rules that define the evaluation sema
 ### Conceptual Model
 ```
 core = [battery payload]
-arm = /[b battery]
-*[core arm]  # Execute arm with core as subject
+arm = /[b core]   # Axis b relative to whole core, not just battery
+*[core arm]       # Execute arm with core as subject
 ```
 
 ### Examples
@@ -264,66 +264,99 @@ arm = /[b battery]
 - Method invocation
 - Core evaluation (Hoon's fundamental pattern)
 
-## Rule 10: Edit Hint
+## Rule 10: Edit (Tree Mutation)
 
 ### Formal Definition
 ```
-*[a 10 [b c] d] → *[a c] (dynamic hint, then d)
-*[a 10 b c]     → *[a c] (static hint, just c)
+*[a 10 [b c] d] → #[b *[a c] *[a d]]
 ```
 
-**Purpose**: Optimization hints, metadata, jet registration
+**Purpose**: Evaluate target `d`, evaluate value `c`, edit target at axis `b` with value. Only one form (with `[axis value]` pair).
+
+### Reduction Steps
+```
+*[subject [10 [axis value-formula] target-formula]]
+  Step 1: target = *[subject target-formula]
+  Step 2: value  = *[subject value-formula]
+  Step 3: #[axis value target]  (replace subtree at axis with value)
+```
 
 ### Examples
 ```
-# Static hint (ignored by spec)
-*[subj [10 [0 marker] formula]]  → *[subj formula]
-
-# Dynamic hint (evaluate hint, then body)
-*[subj [10 [[1 clue] hint-formula] body]]
-  → Process hint
-  → *[subj body]
+*[[1 2] [10 [2 [1 99]] [0 1]]]
+  → target = *[[1 2] [0 1]] = [1 2]
+  → value  = *[[1 2] [1 99]] = 99
+  → #[2 99 [1 2]] = [99 2]
 ```
 
 ### Use Cases
-- Jet registration (`%fast` hint)
+- Modifying a value within a data structure
+- Updating a field in a core's payload
+- Functional "mutation" (produces new noun with one subtree replaced)
+
+## Rule 11: Hint (Static and Dynamic)
+
+### Formal Definition
+```
+*[a 11 b c]     → *[a c]     # Static hint (b is atom)
+*[a 11 [b c] d] → *[a d]     # Dynamic hint (evaluates c as hint clue)
+```
+
+**Purpose**: Provide hints to the runtime without changing computation result.
+
+**Static hint**: `b` is an atom tag (e.g., `%memo`). The runtime may use this tag to optimize evaluation of `c`.
+
+**Dynamic hint**: `[b c]` pair where `b` is the tag and `c` is a formula evaluated to produce a "clue" value. The runtime may use the tag and clue to optimize evaluation of `d`.
+
+### Actively Used Hints
+- **%fast**: Jet registration (tells runtime this core has a native implementation)
+- **%memo**: Memoization (cache results of this computation)
+- **%spot**: Source location (file/line info for stack traces)
+- **%mean**: Error context (descriptive error messages on crash)
+- **%slog**: Debug print (emit debug output during evaluation)
+
+### Examples
+```
+# Static hint: memoize this computation
+*[subj [11 %memo [some-expensive-formula]]]
+  → *[subj [some-expensive-formula]]  (runtime may cache result)
+
+# Dynamic hint: jet registration
+*[subj [11 [%fast [1 %add]] body]]
+  → Evaluate [1 %add] to get clue %add
+  → *[subj body]  (runtime registers jet for %add)
+```
+
+### Use Cases
+- Jet registration (`%fast`)
+- Memoization (`%memo`)
+- Stack traces and error context (`%spot`, `%mean`)
+- Debug output (`%slog`)
 - Profiling markers
-- Debug metadata
-- Optimization directives
 
-## Rule 11: Jet Hint (Reserved)
+## Rule 12: Scry (Namespace Lookup)
 
 ### Formal Definition
 ```
-*[a 11 b c] → *[a c]
+*[a 12 b c] → scry(*[a b], *[a c])
 ```
 
-**Purpose**: Reserved for implementation-specific jetting
+**Purpose**: Evaluate `b` (ref) and `c` (path), perform namespace lookup via scry gate. This is NOT a slot operation.
 
-**Spec Behavior**: Ignore hint, evaluate `c`
+**Mechanism**: The runtime's scry handler (provided via +mink in hoon.hoon) is invoked with the evaluated ref and path to perform a referentially transparent namespace read.
 
-**Implementations May**: Accelerate with native code if jet available
+### Examples
+```
+*[subj [12 ref-formula path-formula]]
+  → ref  = *[subj ref-formula]
+  → path = *[subj path-formula]
+  → scry(ref, path)  (namespace lookup via runtime scry gate)
+```
 
 ### Use Cases
-- Native code acceleration
-- Performance optimization
-- Runtime hooks
-
-## Rule 12: Scry (Reserved)
-
-### Formal Definition
-```
-*[a 12 b c] → /[c a]
-```
-
-**Purpose**: Referentially transparent data access (pure read-only query)
-
-**Status**: Reserved for future Urbit lifecycle function
-
-### Use Cases
-- Pure data access
-- Namespace queries
-- Referential transparency guarantees
+- Referentially transparent namespace reads
+- Reading from Arvo's scry namespace (.^ in Hoon)
+- Pure data access without side effects
 
 ## Implementation Pattern
 
@@ -398,28 +431,39 @@ def nock(subject, formula):
         b = slot(rest, 2)
         c = slot(rest, 3)
         core = nock(subject, c)
-        arm = slot(core, 2)  # Battery is head of core
-        arm_formula = slot(arm, b)
+        arm_formula = slot(core, b)  # Axis b relative to whole core
         return nock(core, arm_formula)
 
-    # Rule 10: Hint
+    # Rule 10: Edit (tree mutation)
     if op == 10:
-        hint = slot(rest, 2)
-        body = slot(rest, 3)
-        # Simplified: ignore hint, evaluate body
-        return nock(subject, body)
+        spec = slot(rest, 2)   # [axis value-formula]
+        target_formula = slot(rest, 3)
+        axis = slot(spec, 2)
+        value_formula = slot(spec, 3)
+        target = nock(subject, target_formula)
+        value = nock(subject, value_formula)
+        return edit(axis, value, target)  # #[axis value target]
 
-    # Rule 11: Jet hint
+    # Rule 11: Hint (static or dynamic)
     if op == 11:
-        return nock(subject, slot(rest, 3))
+        hint = slot(rest, 2)
+        if is_atom(hint):
+            # Static hint: *[a 11 b c] → *[a c]
+            return nock(subject, slot(rest, 3))
+        else:
+            # Dynamic hint: *[a 11 [b c] d] → *[a d]
+            nock(subject, slot(hint, 3))  # Evaluate clue (may be used by runtime)
+            return nock(subject, slot(rest, 3))
 
-    # Rule 12: Scry
+    # Rule 12: Scry (namespace lookup)
     if op == 12:
-        return slot(subject, slot(rest, 3))
+        ref = nock(subject, slot(rest, 2))
+        path = nock(subject, slot(rest, 3))
+        return scry(ref, path)  # Namespace lookup via runtime scry gate
 
     raise NockCrash(f"unknown operator: {op}")
 ```
 
 ## Summary
 
-13 Nock reduction rules: 0(slot), 1(constant), 2(evaluate), 3(cell test), 4(increment), 5(equality), 6(if-then-else), 7(composition), 8(push), 9(call), 10(edit hint), 11(jet hint), 12(scry). Pattern match formula head (operator) to select rule. Core pattern: Rule 9 invokes arms in cores `[battery payload]`. Composition patterns: Rule 7 (pipe), Rule 8 (extend subject). Hints (10-11) enable optimization without changing semantics. All rules deterministic, pure functional evaluation.
+13 Nock reduction rules: 0(slot), 1(constant), 2(evaluate), 3(cell test), 4(increment), 5(equality), 6(if-then-else), 7(composition), 8(push), 9(call/invoke arm at axis b of core), 10(edit/tree mutation), 11(hint: static and dynamic, used for %fast/%memo/%spot/%mean/%slog), 12(scry/namespace lookup). Pattern match formula head (operator) to select rule. Core pattern: Rule 9 invokes arms in cores `[battery payload]` using axis relative to whole core. Rule 10 performs functional tree editing via #[axis value target]. Rule 11 provides hints to runtime without changing semantics. Rule 12 performs namespace reads via scry gate. All rules deterministic, pure functional evaluation.

@@ -307,7 +307,7 @@ df -h /path/to/pier
 **Severe corruption (won't boot):**
 ```bash
 # Attempt event replay
-urbit-worker replay pier/
+urbit play pier/
 
 # If fails, event log damaged
 # Restore from backup (if available)

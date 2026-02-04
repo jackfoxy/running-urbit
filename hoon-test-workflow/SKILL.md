@@ -1,8 +1,8 @@
 ---
 name: hoon-test-workflow
+description: Comprehensive testing workflow for Hoon code covering unit tests, integration tests, property-based tests, and test-driven development
 user-invocable: true
 disable-model-invocation: false
-Comprehensive testing workflow for Hoon code covering unit tests, integration tests, property-based tests, and test-driven development 
 ---
 
 # Hoon Testing Command

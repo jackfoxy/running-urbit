@@ -109,18 +109,18 @@ Structural equality: `0` if identical, `1` if different.
 
 Formulas 2-9 are composites of rules 0-5.
 
-### Rule 10: Hint (`[a b c]`)
+### Rule 10: Edit (`[a b c]`)
 ```
 [subject [a b c]] = nock(subject, b)
 ```
-Optimization marker; discards formula `a` if `b` is cell.
+Tree editing; replaces part of the subject at axis `a`.
 
-### Rule 11: Crash (`[a] !`)
+### Rule 11: Hint (`[a b]`)
 ```
-[subject a] ! = !a
+[subject [a b]] = nock(subject, b)
 ```
 
-Controlled crash with value `a`.
+Optimization hint; evaluates `b` and may use `a` as a hint to the runtime.
 
 ### Rule 12: Scry (`[a b] ^`)
 ```

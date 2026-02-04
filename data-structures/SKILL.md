@@ -126,10 +126,9 @@ Hoon provides functional data structures built on the noun foundation. This skil
 |=([n=@ud acc=@ud] (add n acc))
 ::  10
 
-::  Find first matching
-%+  find  ~[1 2 3 4 5]
-|=(n=@ud (gth n 3))
-::  `4
+::  Find sublist in list (returns index as unit)
+(find ~[2 3] ~[1 2 3 4])  ::  [~ 1]
+(find ~[5 6] ~[1 2 3 4])  ::  ~ (not found)
 ```
 
 ### Performance
@@ -343,9 +342,15 @@ m
 ### Usage
 
 ```hoon
-=/  m  (mo ~[[1 'a'] [2 'b'] [3 'c']])
+::  Mops require defining a comparator; there is no `mo` constructor.
+::  Use the +on core to create mop operations:
+=/  compare  |=([a=@ud b=@ud] (lth a b))
+=/  mop-on  ((on @ud @t) compare)
 
-::  Operations similar to map but maintain order
+::  Build a mop by inserting entries
+=/  m  *((mop @ud @t) compare)
+=/  m  (put:mop-on m [1 'a'])
+=/  m  (put:mop-on m [2 'b'])
 ~(tap by m)  ::  Returns in key order
 ```
 

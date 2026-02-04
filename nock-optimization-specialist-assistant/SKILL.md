@@ -94,10 +94,10 @@ Noun* nock_compose_add(Noun* subject, Noun* formula) {
 }
 ```
 
-### Pattern 3: Hint Processing
+### Pattern 3: Edit Processing
 ```c
 // Rule 10: [subject [a b c]]
-Noun* nock_hint(Noun* subject, Noun* formula) {
+Noun* nock_edit(Noun* subject, Noun* formula) {
     Noun* a = cell_first(formula);
     Noun* bc = cell_rest(formula);
     Noun* b = cell_first(bc);

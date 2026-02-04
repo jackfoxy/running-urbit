@@ -72,6 +72,8 @@ Gall is Urbit's application framework. Gall agents are userspace programs that m
 --
 ```
 
+> **WARNING**: Delegating `on-poke`, `on-watch`, `on-peek`, or `on-arvo` to `default-agent` will CRASH the agent when those arms are called. The default-agent implementations of these arms intentionally crash to signal unhandled events. Only `on-init`, `on-save`, `on-load`, `on-leave`, and `on-fail` are safe to delegate to default-agent. If your agent does not handle pokes, watches, peeks, or arvo responses, you must still provide an implementation that returns `(quip card _this)` without crashing (e.g., return `` `this ``).
+
 ## 2. Agent Arms
 
 ### `++  on-init`
@@ -83,7 +85,7 @@ Gall is Urbit's application framework. Gall agents are userspace programs that m
   ^-  (quip card _this)
   :_  this
   :~  [%pass /init-timer %arvo %b %wait (add now ~m1)]
-      [%give %fact ~[/updates] %json !>([%initialized now])]
+      [%give %fact ~[/updates] %json !>((pairs:enjs:format ~[['status' s+'initialized'] ['time' (sect:enjs:format now)]]))]
   ==
 ```
 
@@ -347,7 +349,7 @@ Send a response/update:
 ```hoon
 ::  Fact (subscription update)
 [%give %fact ~[/path] %mark !>(data)]
-[%give %fact ~ %mark !>(data)]  ::  All subscribers
+[%give %fact ~ %mark !>(data)]  ::  Current duct only (used in on-watch to send initial state to subscribing duct). To send to all subscribers on a path, specify paths: [%give %fact ~[/path] ...]
 
 ::  Kick (close subscription)
 [%give %kick ~[/path] ~]

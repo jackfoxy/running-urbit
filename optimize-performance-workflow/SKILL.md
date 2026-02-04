@@ -1,8 +1,8 @@
 ---
 name: optimize-performance-workflow
+description: Automated performance optimization workflow for Urbit ships including profiling, bottleneck identification, and systematic tuning
 user-invocable: true
 disable-model-invocation: false
-Automated performance optimization workflow for Urbit ships including profiling, bottleneck identification, and systematic tuning 
 agents:
   - performance-engineer
 skills:

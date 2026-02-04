@@ -1,8 +1,8 @@
 ---
 name: hoon-scaffold-workflow
+description: Project scaffolding workflow for creating new Urbit applications with proper structure, boilerplate, and best practices
 user-invocable: true
 disable-model-invocation: false
-Project scaffolding workflow for creating new Urbit applications with proper structure, boilerplate, and best practices 
 ---
 
 # Hoon Project Scaffolding Command

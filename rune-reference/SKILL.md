@@ -118,8 +118,8 @@ code
 
 **When to use**: Lazy evaluation, avoiding unnecessary computation
 
-#### `|-` - Barhep - Recursion Point
-**Purpose**: Create a recursion point (calls itself with `$`)
+#### `|-` - Barhep - Trap Kick
+**Purpose**: Create a trap and immediately run its `$` arm. Desugars to `=<($ |.(body))`.
 
 **Syntax**:
 ```hoon
@@ -135,7 +135,7 @@ code
 $(counter (dec counter))
 ```
 
-**When to use**: Loops, recursion, iteration
+**When to use**: Loops, recursion, iteration (creates a trap and immediately executes it)
 
 #### `|^` - Barket - Multi-arm Core
 **Purpose**: Core with a default `$` arm
@@ -537,7 +537,7 @@ body
 **When to use**: Gall agents, stateful computation
 
 #### `=~` - Tissig - Compose Many
-**Purpose**: Compose multiple expressions sequentially
+**Purpose**: Compose multiple expressions sequentially. Each expression's result becomes the subject for the next.
 
 **Syntax**:
 ```hoon
@@ -548,14 +548,14 @@ body
 ==
 
 ::  Example
-=~  (add 1 2)
-    (mul 3)
-    (sub 1)
+=~  [42 "hello"]
+    -.
 ==
-::  ((1 + 2) * 3) - 1 = 8
+::  Evaluates to 42 (the head of the cell).
+::  [42 "hello"] becomes the subject, then -. takes the head.
 ```
 
-**When to use**: Pipeline of transformations
+**When to use**: Chaining subject transformations, composing cores
 
 #### `=?` - Tiswut - Conditional Modify
 **Purpose**: Conditionally modify wing
@@ -861,21 +861,22 @@ Assertions, errors, and debugging output.
 
 **When to use**: Metaprogramming, Nock inspection
 
-#### `!?` - Zapwut - Debug Print
-**Purpose**: Print debug info and continue
+#### `!?` - Zapwut - Version Check
+**Purpose**: Assert minimum Hoon version. Crashes if hoon-version doesn't match.
 
 **Syntax**:
 ```hoon
-!?  value
+!?  [%hoon-version minimum]
 code
 
 ::  Example
-=/  x  (big-computation)
-!?  x
-(use-result x)
+!?  [%hoon-version 140]
+|%
+++  my-gate  |=(a=@ a)
+--
 ```
 
-**When to use**: Debugging, inspecting intermediate values
+**When to use**: Enforcing minimum Hoon version at the top of a file
 
 ### 7. `^` - Ket Runes (Type Operations)
 
@@ -931,32 +932,33 @@ value
 
 **When to use**: Default values, initialization
 
-#### `^:` - Ketcol - Extend Type
-**Purpose**: Extend with null (make optional)
+#### `^:` - Ketcol - Mold Gate
+**Purpose**: Construct a normalizing gate from a type specification.
 
 **Syntax**:
 ```hoon
 ^:  type
 
 ::  Example
-^:  @ud  ::  $@(~ @ud) - null or @ud
+^:  @ud  ::  Produces a gate that normalizes its sample to @ud
 ```
 
-**When to use**: Optional values (rare, use `unit` instead)
+**When to use**: When you need a gate that normalizes/validates values to a given type
 
-#### `^.` - Ketdot - Inferred Cast
-**Purpose**: Cast with inference from context
+#### `^.` - Ketdot - Self-Cast
+**Purpose**: Apply gate p to value q and cast q to the result's type. Desugars to `^+((p q) q)`.
 
 **Syntax**:
 ```hoon
-^.  value
+^.  p
+q
 
 ::  Example
-=/  x  ^.([1 2])  ::  Infer type from usage
-x
+^.  |=(a=@ud a)
+42  ::  Applies the gate to 42, then casts 42 to the result type (@ud)
 ```
 
-**When to use**: Rarely (explicit casts better)
+**When to use**: When you want to cast a value by running it through a normalizer gate
 
 #### `^=` - Kettis - Name Type
 **Purpose**: Bind face (name) to typed value
@@ -973,31 +975,33 @@ name=value
 
 **When to use**: Never (use irregular `name=value`)
 
-#### `^&` - Ketpam - Convert to Noun
-**Purpose**: Strip type, keep value
+#### `^&` - Ketpam - Covariant
+**Purpose**: Mark core as covariant (zinc variance).
 
 **Syntax**:
 ```hoon
-^&  value
+^&  core
 
 ::  Example
-^&  [x=1 y=2]  ::  [1 2] (faces removed)
+^&  |%
+    ++  val  42
+    --
 ```
 
-**When to use**: Type erasure (rare)
+**When to use**: Advanced type system usage to mark a core with zinc (covariant) variance
 
-#### `^|` - Ketbar - Validate Variance
-**Purpose**: Nest type (variance check)
+#### `^|` - Ketbar - Contravariant
+**Purpose**: Mark core as contravariant (iron variance).
 
 **Syntax**:
 ```hoon
-^|  (type-a type-b)
+^|  core
 
 ::  Example
-^|  (@ud @)  ::  Check @ud nests in @
+^|  |=(a=@ a)  ::  Mark this gate as iron (contravariant)
 ```
 
-**When to use**: Type system validation (rare)
+**When to use**: Advanced type system usage to mark a core with iron (contravariant) variance
 
 #### `^~` - Ketsig - Compile-time Evaluation
 **Purpose**: Evaluate at compile time (constant fold)
@@ -1072,33 +1076,33 @@ code
 
 **When to use**: Rarely (use `~>` instead)
 
-#### `~$` - Sigbuc - Cache Result
-**Purpose**: Memoize computation
+#### `~$` - Sigbuc - Profiler Hit
+**Purpose**: Label for profiling. Provides a profiler label hint.
 
 **Syntax**:
 ```hoon
-~$  key
+~$  %label
 code
 
 ::  Example
-~$  [n m]  ::  Cache with key
-(expensive n m)
+~$  %my-function
+(expensive-computation x)
 ```
 
-**When to use**: Expensive pure computations
+**When to use**: Profiling and performance analysis, labeling code sections for the profiler
 
-#### `~+` - Siglus - Lazy Computation
-**Purpose**: Defer computation
+#### `~+` - Siglus - Memoize
+**Purpose**: Cache/memoize the result of a computation.
 
 **Syntax**:
 ```hoon
 ~+  code
 
 ::  Example
-~+  (big-computation)
+~+  (big-computation)  ::  Result is cached; subsequent calls return cached value
 ```
 
-**When to use**: Lazy evaluation optimization
+**When to use**: Expensive pure computations that may be called repeatedly with the same subject
 
 #### `~&` - Sigpam - Print Debug
 **Purpose**: Print to console and continue
@@ -1308,15 +1312,18 @@ $+  name  type
 
 **When to use**: Exported type definitions
 
-#### `$*` - Buctar - Produce Example
-**Purpose**: Explicit bunt (default value)
+#### `$~` - Bucsig - Custom Default Value
+**Purpose**: Define a mold with a custom default (bunt) value
 
 **Syntax**:
 ```hoon
-$*  default-value
+$~  default-value  mold
+
+::  Example
++$  my-counter  $~(1 @ud)  ::  @ud that defaults to 1 instead of 0
 ```
 
-**When to use**: Custom default values for types
+**When to use**: When you need a type whose default value differs from the standard bunt. Note: there is no `$*` rune; use `$~` for custom defaults and `^*` to produce the bunt of a type.
 
 #### `$=` - Buctis - Name Mold
 **Purpose**: Bind face to mold
@@ -1433,19 +1440,21 @@ arg-3
 
 **When to use**: Complex core manipulation
 
-#### `%.` - Cendot - Call Auto
-**Purpose**: Auto-select call style
+#### `%.` - Cendot - Inverted Call
+**Purpose**: Inverted function call: sample first, gate second. `%.  sample  gate`
 
 **Syntax**:
 ```hoon
+::  Tall form
 %.  sample
-function
+gate
 
-::  Irregular form
-(function sample)
+::  Example
+%.  42
+|=(a=@ud (mul 2 a))  ::  Produces 84
 ```
 
-**When to use**: Rarely (use irregular)
+**When to use**: When you want to emphasize the argument over the function, or for pipeline-style code
 
 #### `%=` - Centis - Eval with Changes
 **Purpose**: Recursion with modified subject
@@ -1463,18 +1472,7 @@ wing(face-1 value-1, face-2 value-2)
 
 **When to use**: Recursion, loop updates
 
-#### `%$` - Cenbuc - Recurse
-**Purpose**: Call `$` arm (loop/recurse)
-
-**Syntax**:
-```hoon
-$
-
-::  With changes
-$(face-1 value-1, face-2 value-2)
-```
-
-**When to use**: Recursion/loops (most common!)
+Note: `$` is not a rune — it is a wing name referring to the default arm of a core. Use `%=` (centis) or its irregular form `$(...)` to recurse with modified values.
 
 ### 12. `+` - Lus Runes (Arms)
 
@@ -1642,7 +1640,6 @@ mint-vain
 +(5)              ::  .+(5)
 name=value        ::  ^=(name value)
 ^-(type val)      ::  Cast
-?(test a b)       ::  ?:(test a b)
 $(x new-x)        ::  %=($ x new-x)
 ```
 

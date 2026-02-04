@@ -72,9 +72,9 @@ urbit -F zod  # Or any ship name
 /+  default-agent, dbug
 |%
 +$  versioned-state
-  $%  state-0
+  $%  [%0 state-0]
   ==
-+$  state-0  [%0 counter=@ud]
++$  state-0  [counter=@ud]
 +$  card  card:agent:gall
 --
 %-  agent:dbug
@@ -430,7 +430,7 @@ code --install-extension urbit-pilled.hoon-language-server
 6. **Document APIs**: Write clear sur/ structure definitions
 7. **Security**: Validate poke sources (`?>  =(src.bowl our.bowl)`)
 8. **Graceful upgrades**: Use on-save/on-load for state migration
-9. **Error handling**: Never crash (use on-fail)
+9. **Error handling**: `on-fail` is called AFTER a crash to handle recovery/logging. Use `?>` guards, `?~` null checks, and explicit error handling to PREVENT crashes in the first place.
 10. **Performance**: Minimize state size, use caching
 
 ---
@@ -467,14 +467,19 @@ code --install-extension urbit-pilled.hoon-language-server
 
 ### HTTP API Endpoint
 
+> **Note**: HTTP responses should use `give-simple-payload:app:server` from the `server` library, not raw `%give %fact` cards. The server library handles the correct multi-card response protocol (header + body + complete) that Eyre expects.
+
 ```hoon
+/+  server
+::
 ++  on-poke
   |=  [=mark =vase]
   ?+  mark  (on-poke:default mark vase)
       %handle-http-request
     =/  req  !<([@ta inbound-request:eyre] vase)
     :_  this
-    [%give %fact ~[/http-response/[-.req]] %http-response-header !>(response)]~
+    %+  give-simple-payload:app:server  -.req
+    [[200 ~[['Content-Type' 'application/json']]] `(as-octs:mimes:html '{"status":"ok"}')]
   ==
 ```
 
@@ -484,7 +489,7 @@ code --install-extension urbit-pilled.hoon-language-server
 
 **Agent won't start**:
 - Check syntax: `:myapp +dbug %state`
-- Review logs: `.^(wain %cx /=myapp=/app/myapp/hoon)`
+- Read source file (not logs): `.^(wain %cx /=myapp=/app/myapp/hoon)` -- note this reads the Hoon source code, not runtime logs. For runtime errors, check the dojo output directly.
 
 **Subscription not working**:
 - Verify path in on-watch

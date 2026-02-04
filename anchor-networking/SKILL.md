@@ -16,7 +16,7 @@ Anchor is a self-hosted alternative to StarTram (Tlon's managed networking servi
 ## StarTram vs Anchor Comparison
 
 **StarTram** (Managed):
-- Hosted by Tlon
+- Hosted by Native Planet
 - Registration code entry in GroundSeg UI
 - Zero infrastructure management
 - Automatic SSL/TLS

@@ -60,7 +60,7 @@ For large fleets, use Docker Compose configuration:
 # docker-compose.yml
 services:
   ship1:
-    image: urbit/urbit:latest
+    image: nativeplanet/urbit:latest
     volumes:
       - ./piers/ship1:/urbit
     environment:
@@ -68,7 +68,7 @@ services:
     mem_limit: 4g
 
   ship2:
-    image: urbit/urbit:latest
+    image: nativeplanet/urbit:latest
     volumes:
       - ./piers/ship2:/urbit
     environment:
@@ -121,7 +121,7 @@ services:
 
 ```bash
 # List all ship containers
-docker ps --filter "ancestor=urbit/urbit"
+docker ps --filter "ancestor=nativeplanet/urbit"
 
 # Check resource usage
 docker stats

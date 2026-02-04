@@ -160,11 +160,12 @@ text                 ::  'abc'
 (scot %ux 42)        ::  '0x2a'
 (scot %p 42)         ::  '~nec'
 
-::  Specific bases
+::  Specific formatting
 =/  num  255
 (a-co:co num)        ::  "255" (decimal)
-(r-co:co 16 num)     ::  "ff" (hex)
-(r-co:co 2 num)      ::  "11111111" (binary)
+::  For hex/binary display, use scot:
+(scot %ux num)       ::  '0xff'
+(scot %ub num)       ::  '0b1111.1111'
 ```
 
 ### String → Number
@@ -172,7 +173,7 @@ text                 ::  'abc'
 ```hoon
 ::  Tape → Number (via parser)
 (scan "42" dem)      ::  42
-(scan "0x2a" hex)    ::  42
+(scan "2a" hex)      ::  42  :: hex parser doesn't handle 0x prefix
 
 ::  Cord → Number (via parser)
 (rash '42' dem)      ::  42

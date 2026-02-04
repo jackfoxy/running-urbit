@@ -29,7 +29,7 @@ Hoon uses parser combinators to build composable parsers. This skill covers core
 A parser is a `rule` that consumes input and produces a result:
 
 ```hoon
-+$  rule  [p=hair q=nail]
+::  +$rule is a gate from nail to edge: _|:($:nail $:edge)
 +$  hair  [p=@ud q=@ud]  ::  Line and column
 +$  nail  [p=hair q=tape]  ::  Position and remaining input
 +$  edge  [p=hair q=(unit [p=* q=nail])]  ::  Parse result
@@ -78,19 +78,20 @@ A parser is a `rule` that consumes input and produces a result:
 ::  hig - Uppercase
 (scan "A" hig)  ::  'A'
 
-::  alp - Alphanumeric
+::  alp - Alphanumeric AND hyphens
 (scan "a" alp)  ::  'a'
 (scan "5" alp)  ::  '5'
+(scan "-" alp)  ::  '-'
 ```
 
 ### Whitespace Parsers
 
 ```hoon
 ::  gap - Whitespace (1+)
-(scan "   " gap)  ::  ~[' ' ' ' ' ']
+(scan "   " gap)  ::  ~ (produces null)
 
-::  gon - Whitespace (0+)
-(scan "" gon)  ::  ~
+::  gon - Matches backslash-newline-slash sequence
+::  Used in tall-form Hoon parsing, NOT general whitespace
 ```
 
 ### Number Parsers
@@ -104,8 +105,6 @@ A parser is a `rule` that consumes input and produces a result:
 (scan "2a" hex)  ::  42
 (scan "ff" hex)  ::  255
 
-::  viz - Base64 URL-safe
-(scan "YQ" viz)  ::  25.185
 ```
 
 ### Text Parsers
@@ -114,8 +113,9 @@ A parser is a `rule` that consumes input and produces a result:
 ::  sym - Symbol (%foo)
 (scan "hello" sym)  ::  %hello
 
-::  urs - Knot (~.foo)
-(scan "hello" urs)  ::  ~.hello
+::  urs - Knot parser (inside the +so core, not top-level)
+::  Access as urs:so
+(scan "hello" urs:so)  ::  ~.hello
 ```
 
 ## 3. Parser Combinators
@@ -148,7 +148,8 @@ A parser is a `rule` that consumes input and produces a result:
 (scan "" (plus (just 'a')))  ::  Crash
 
 ::  stir - Fold while parsing
-(scan "123" (stir 0 add dem))  ::  6 (1+2+3)
+::  dem parses complete decimal numbers, so "123" is parsed as 123
+(scan "123" (stir 0 add dem))  ::  123
 ```
 
 ### Sequence and Choice

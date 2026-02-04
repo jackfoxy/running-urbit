@@ -112,10 +112,11 @@ nock(subject, formula):
     [6 b c d]    → if nock(a,b) then c else d # Conditional
     [7 b c]      → nock(nock(a,b), c)         # Compose
     [8 b c]      → nock([nock(a,b) a], c)     # Push
-    [9 b c]      → nock(nock(a,c), slot(·,b)) # Call
-    [10 b c]     → nock(a, c)  # Hint (simplified)
-    [11 b c]     → nock(a, c)  # Hint (reserved)
-    [12 b c]     → slot(a, c)  # Scry (reserved)
+    [9 b c]      → nock(nock(a,c), slot(nock(a,c),b)) # Call (axis b of core)
+    [10 [b c] d] → #[b nock(a,c) nock(a,d)] # Edit (tree mutation)
+    [11 b c]     → nock(a, c)  # Hint (static, atom b)
+    [11 [b c] d] → nock(a, d)  # Hint (dynamic, evaluates c as clue)
+    [12 b c]     → scry(nock(a,b), nock(a,c)) # Scry (namespace lookup)
 ```
 
 ### Crash Semantics
@@ -125,8 +126,7 @@ If no rule matches or invalid operation occurs, Nock **crashes** (halts with err
 - Axis 0 (forbidden)
 - Slot in atom (when axis > 1)
 - Increment cell
-- Malformed formula
-- Explicit crash (rule 1)
+- Malformed formula (e.g., atom where cell expected, unknown operator)
 
 ## Data Representation
 
@@ -310,11 +310,11 @@ const nested = Noun.cell(cell, Noun.atom(3));  // [[1 2] 3]
 
 ```python
 def noun_type_test(noun):
-    """Nock ? operator: type test."""
-    if is_atom(noun):
-        return Atom(1)  # Yes, is atom (loobean)
+    """Nock ? operator: tests 'is this a cell?' — 0=yes, 1=no."""
+    if is_cell(noun):
+        return Atom(0)  # Yes, is a cell (loobean)
     else:
-        return Atom(0)  # No, is cell
+        return Atom(1)  # No, is not a cell (is atom)
 
 def noun_equals(a, b):
     """Nock = operator: deep structural equality."""

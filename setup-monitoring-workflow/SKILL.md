@@ -1,8 +1,8 @@
 ---
 name: setup-monitoring-workflow
+description: Automated monitoring stack setup for Urbit fleets with Prometheus, Grafana, alerting, and cloud-native integration
 user-invocable: true
 disable-model-invocation: false
-Automated monitoring stack setup for Urbit fleets with Prometheus, Grafana, alerting, and cloud-native integration 
 agents:
   - groundseg-operator
 skills:

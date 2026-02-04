@@ -1,8 +1,8 @@
 ---
 name: hoon-refactor-workflow
+description: Systematic code refactoring workflow for improving Hoon code structure, readability, and maintainability while preserving correctness
 user-invocable: true
 disable-model-invocation: false
-Systematic code refactoring workflow for improving Hoon code structure, readability, and maintainability while preserving correctness 
 ---
 
 # Hoon Refactoring Command

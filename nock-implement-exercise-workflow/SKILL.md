@@ -1,8 +1,8 @@
 ---
 name: nock-implement-exercise-workflow
+description: Hands-on guided exercises for implementing Nock patterns from increment through decrement challenge.
 user-invocable: true
 disable-model-invocation: false
-Hands-on guided exercises for implementing Nock patterns from increment through decrement challenge. 
 ---
 
 # Nock Implement Exercise Command

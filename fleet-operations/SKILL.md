@@ -120,7 +120,7 @@ spec:
     spec:
       containers:
       - name: urbit
-        image: urbit/urbit:latest
+        image: nativeplanet/urbit:latest
         resources:
           requests:
             memory: "4Gi"
@@ -232,7 +232,7 @@ for ship in "${SHIPS[@]}"; do
     tar czf "backup-$ship-$(date +%Y%m%d).tar.gz" "/opt/groundseg/piers/$ship"
 
     # Update container image
-    docker pull urbit/urbit:latest
+    docker pull nativeplanet/urbit:latest
 
     # Start ship
     docker start $ship

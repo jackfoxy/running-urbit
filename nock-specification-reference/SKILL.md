@@ -55,9 +55,11 @@ Deep equality test (0=equal, 1=not equal)
 
 ### Rule 6: If-Then-Else
 ```
-*[a 6 b c d]  →  *[a 2 [0 1] 2 [1 c d] [0 2] [0 3] 0 2 3 [4 4 5] [0 6] 0 7] b]
+*[a 6 b c d]  →  *[a *[[c d] [0 *[[2 3] [0 *[a 4 4 b]]]]]]
 ```
 **Simplified**: If `*[a b]` = 0 then `*[a c]` else `*[a d]`
+
+Note: The formal expansion above reduces to selecting `c` or `d` based on whether `*[a b]` is 0 or 1. In practice, implementations use the simplified form directly.
 
 ### Rule 7: Composition
 ```
@@ -75,26 +77,26 @@ Extend subject with evaluated `b`
 ```
 *[a 9 b c]  →  *[*[a c] 2 [0 1] 0 b]
 ```
-Invoke arm at axis `b` in core from `c`
+Evaluate `c` to produce a core, extract formula at axis `b` from the core (not just the battery), execute with core as subject
 
-### Rule 10: Edit Hint
+### Rule 10: Edit (Tree Mutation)
 ```
-*[a 10 [b c] d]  →  *[a c] *[a d]  # Dynamic hint
-*[a 10 b c]      →  *[a c]         # Static hint (if b is atom)
+*[a 10 [b c] d]  →  #[b *[a c] *[a d]]
 ```
-Optimization hints (ignored by spec)
+Evaluate target `d`, evaluate value `c`, edit target at axis `b` with value. Only one form (with `[axis value]` pair).
 
-### Rule 11: Jet Hint (Reserved)
+### Rule 11: Hint (Static and Dynamic)
 ```
-*[a 11 b c]  →  *[a c]
+*[a 11 b c]      →  *[a c]     # Static hint (b is atom)
+*[a 11 [b c] d]  →  *[a d]     # Dynamic hint (evaluates c as clue)
 ```
-Reserved for implementation jetting
+Provides hints to runtime without changing result. Actively used for %fast (jet registration), %memo (memoization), %spot (source location), %mean (error context), %slog (debug print).
 
-### Rule 12: Scry (Reserved)
+### Rule 12: Scry (Namespace Lookup)
 ```
-*[a 12 b c]  →  /[c a]
+*[a 12 b c]  →  scry(*[a b], *[a c])
 ```
-Referentially transparent namespace access
+Evaluate `b` (ref) and `c` (path), perform namespace lookup via scry gate. NOT a slot operation. Used for referentially transparent namespace reads (.^ in Hoon).
 
 ## Pseudo-Functions
 
@@ -113,9 +115,10 @@ Referentially transparent namespace access
 
 ### ? (Type Test)
 ```
-?[atom]  →  1  # Yes, is atom
-?[cell]  →  0  # No, is cell
+?[cell]  →  0  # Yes, is a cell
+?[atom]  →  1  # No, is not a cell
 ```
+Tests "is this a cell?" -- 0 means yes (is cell), 1 means no (is atom).
 
 ### + (Increment)
 ```

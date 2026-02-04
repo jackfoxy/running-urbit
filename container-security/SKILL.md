@@ -20,7 +20,7 @@ Container security for Urbit ships involves securing Docker images, runtime conf
 ```yaml
 services:
   urbit:
-    image: urbit/urbit:latest  # Official image only
+    image: nativeplanet/urbit:latest  # Official image only
     # Never use: random-user/urbit:latest
 ```
 
@@ -28,10 +28,10 @@ services:
 
 ```bash
 # Scan for vulnerabilities
-docker scan urbit/urbit:latest
+docker scout cves nativeplanet/urbit:latest
 
 # Use Trivy (open-source scanner)
-docker run aquasec/trivy image urbit/urbit:latest
+docker run aquasec/trivy image nativeplanet/urbit:latest
 ```
 
 ### Pin Specific Versions
@@ -39,7 +39,7 @@ docker run aquasec/trivy image urbit/urbit:latest
 ```yaml
 services:
   urbit:
-    image: urbit/urbit:v3.2  # Specific version, not :latest
+    image: nativeplanet/urbit:v3.2  # Specific version, not :latest
 ```
 
 ## Runtime Security
@@ -222,7 +222,7 @@ docker logs --since 1h urbit-ship
 ```bash
 # Scan running containers
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-  aquasec/trivy image --severity HIGH,CRITICAL urbit/urbit
+  aquasec/trivy image --severity HIGH,CRITICAL nativeplanet/urbit
 ```
 
 ## Compliance Hardening
@@ -271,7 +271,7 @@ cat docker-bench-report.txt | grep -E "WARN|FAIL"
 
 ## Best Practices Checklist
 
-- [ ] Use official images only (urbit/urbit)
+- [ ] Use official images only (nativeplanet/urbit)
 - [ ] Pin specific image versions (not :latest)
 - [ ] Run as non-root user
 - [ ] Drop all capabilities, add only necessary

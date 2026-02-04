@@ -131,7 +131,7 @@ cell-case
 1. **Null is `~`** not `0` or `false` or `nil`
 2. **Lists are right-branching**: `~[1 2 3]` = `[1 [2 [3 ~]]]`
 3. **Runes are two characters**: `=+` not `=`, `|-` not `|`
-4. **Hoon has no strings**: Use `@t` (cord/tape) or `tape` (list of @t)
+4. **Hoon has no strings**: Use `@t` (cord) or `tape` (list of @tD)
 5. **Subject-oriented**: Everything operates on implicit context (the subject)
 6. **Whitespace matters in tall form**: Two spaces for indentation
 7. **No mutation**: All data structures are immutable
@@ -162,7 +162,7 @@ cell-case
 
 ```hoon
 |=  ::  Gate (function definition)
-|-  ::  Trap (recursion)
+|-  ::  Trap Kick (create trap and immediately run)
 ?:  ::  If-then-else
 =/  ::  Pin value to face
 =<  ::  Compose with subject on right

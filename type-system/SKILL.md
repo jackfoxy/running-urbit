@@ -115,7 +115,7 @@ Auras form a tree hierarchy. Child auras nest in parent auras:
 
 **Display conversions** (rendering):
 ```hoon
-(scot %ud 42)    ::  '42' (@ta - tape representation)
+(scot %ud 42)    ::  '42' (returns @ta knot, not tape)
 (scot %ux 42)    ::  '0x2a'
 (scot %p 42)     ::  '~nec'
 ```
@@ -180,7 +180,7 @@ Special boolean type:
 %my-tag
 ```
 
-4. **`tape`** - List of characters `(list @t)`, flexible:
+4. **`tape`** - List of characters `(list @tD)`, flexible:
 ```hoon
 "hello"  ::  Double-quoted
 "Hello, world!"
@@ -349,7 +349,7 @@ x.p  ::  5
 +$  json
   $@  ~
   $%  [%s p=@t]
-      [%n p=@ud]
+      [%n p=@ta]
       [%b p=?]
       [%a p=(list json)]
       [%o p=(map @t json)]
@@ -953,7 +953,7 @@ step-2
 +$  json
   $@  ~
   $%  [%s p=@t]
-      [%n p=@ud]
+      [%n p=@ta]
       [%b p=?]
       [%a p=(list json)]
       [%o p=(map @t json)]

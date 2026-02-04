@@ -191,7 +191,7 @@ Runes are Hoon's syntax for subject transformation:
 ### Composing Subject
 
 ```hoon
-=>  context     ::  Evaluate right, add to subject, then evaluate left
+=>  context     ::  Evaluate first child (context), use result as subject for second child (expression)
     expression
 
 =<  expression  ::  Same but reversed (result-first)

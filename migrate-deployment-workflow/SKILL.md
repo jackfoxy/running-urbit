@@ -1,8 +1,8 @@
 ---
 name: migrate-deployment-workflow
+description: Automated ship migration workflow between hosting environments (Tlon, VPS, Managed, Self-hosting) with zero-data-loss procedures
 user-invocable: true
 disable-model-invocation: false
-Automated ship migration workflow between hosting environments (Tlon ↔ VPS ↔ Managed ↔ Self-hosting) with zero-data-loss procedures 
 agents:
   - managed-hosting-advisor
   - urbit-deployment-specialist
