@@ -86,6 +86,13 @@ These skills give coding agents practical knowledge of the Urbit runtime, Hoon p
 | [nock-implement-exercise-workflow](./skills/nock-implement-exercise-workflow/) | Workflow | Hands-on guided exercises |
 | [orchestrate-interpreter-workflow](./skills/orchestrate-interpreter-workflow/) | Workflow | Complete Nock mastery orchestration |
 
+### Ship Interaction
+
+| Skill | Type | Description |
+|-------|------|-------------|
+| [urbit-conn](./skills/urbit-conn/) | Interaction | Programmatic ship control via conn.sock -- scry, runtime queries, thread execution, event injection |
+| [urbit-terminal](./skills/urbit-terminal/) | Interaction | Interactive dojo access via screen/tmux -- command execution, output capture, safety guards |
+
 ### Ship Operations & Deployment
 
 | Skill | Type | Description |
@@ -114,16 +121,6 @@ These skills give coding agents practical knowledge of the Urbit runtime, Hoon p
 | [optimize-performance-workflow](./skills/optimize-performance-workflow/) | Workflow | Performance tuning |
 | [orchestrate-deployment-workflow](./skills/orchestrate-deployment-workflow/) | Workflow | Intelligent deployment coordination |
 
-### Networking & Security
-
-| Skill | Type | Description |
-|-------|------|-------------|
-| [anchor-networking](./skills/anchor-networking/) | Knowledge | Reverse proxy, Let's Encrypt SSL, custom domains |
-| [network-security-advanced](./skills/network-security-advanced/) | Knowledge | Zero-trust networking, VPNs, network policies |
-| [container-security](./skills/container-security/) | Knowledge | User namespaces, capabilities, AppArmor |
-| [advanced-security-patterns](./skills/advanced-security-patterns/) | Knowledge | Defense-in-depth, intrusion detection |
-| [compliance-frameworks](./skills/compliance-frameworks/) | Knowledge | GDPR, HIPAA, SOC2, ISO 27001 |
-
 ### Monitoring, Backup & Reliability
 
 | Skill | Type | Description |
@@ -135,12 +132,15 @@ These skills give coding agents practical knowledge of the Urbit runtime, Hoon p
 | [backup-disaster-recovery](./skills/backup-disaster-recovery/) | Knowledge | Automated backups, restoration procedures |
 | [disaster-recovery-advanced](./skills/disaster-recovery-advanced/) | Knowledge | Multi-region failover, cross-region replication |
 
-### Ship Interaction
+### Networking & Security
 
 | Skill | Type | Description |
 |-------|------|-------------|
-| [urbit-conn](./skills/urbit-conn/) | Interaction | Programmatic ship control via conn.sock -- scry, runtime queries, thread execution, event injection |
-| [urbit-terminal](./skills/urbit-terminal/) | Interaction | Interactive dojo access via screen/tmux -- command execution, output capture, safety guards |
+| [anchor-networking](./skills/anchor-networking/) | Knowledge | Reverse proxy, Let's Encrypt SSL, custom domains |
+| [network-security-advanced](./skills/network-security-advanced/) | Knowledge | Zero-trust networking, VPNs, network policies |
+| [container-security](./skills/container-security/) | Knowledge | User namespaces, capabilities, AppArmor |
+| [advanced-security-patterns](./skills/advanced-security-patterns/) | Knowledge | Defense-in-depth, intrusion detection |
+| [compliance-frameworks](./skills/compliance-frameworks/) | Knowledge | GDPR, HIPAA, SOC2, ISO 27001 |
 
 ## Requirements
 
