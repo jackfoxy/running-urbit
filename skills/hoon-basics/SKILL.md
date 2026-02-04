@@ -135,6 +135,8 @@ cell-case
 5. **Subject-oriented**: Everything operates on implicit context (the subject)
 6. **Whitespace matters in tall form**: Two spaces for indentation
 7. **No mutation**: All data structures are immutable
+8. **Number formatting**: Numbers over 999 MUST use dots every 3 digits: `1.000` not `1000`, `844.494` not `844494`. Omitting dots causes a parser error (e.g. `{1 52}`) with no hint about number formatting. This is a common source of hard-to-diagnose errors.
+9. **Backtick escaping from Python**: When generating Hoon from Python, backticks (`` ` ``) conflict with string formatting. Use `\x60` as the Python-safe way to emit a backtick character in generated Hoon code. In bash, single-quoted strings (`'...'`) pass backticks through safely with no escaping needed.
 
 ## Fast Lookups
 

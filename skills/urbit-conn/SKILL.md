@@ -10,6 +10,55 @@ argument-hint: <command> [pier-path]
 
 Programmatic interface to a running Urbit ship via the `.urb/conn.sock` Unix domain socket.
 
+## Critical: Prefer File-Based Threads Over Inline
+
+**The `-kp` inline mode is unreliable.** Backticks, `!>`, and special characters get mangled by shell quoting layers. Inline strings work for trivial expressions but break on real Hoon.
+
+**Always prefer `-k -i file.hoon` (file-based threads) for anything non-trivial:**
+
+```bash
+# RECOMMENDED: Write thread to a file, then execute
+cat > /tmp/my-thread.hoon << 'HOON'
+=/  m  (strand ,vase)
+;<  our=@p  bind:m  get-our
+(pure:m !>(our))
+HOON
+click -k -i /tmp/my-thread.hoon /path/to/pier
+```
+
+```bash
+# UNRELIABLE: Inline mode — backticks and !> get mangled by shell
+# This looks like it should work but produces conn: moor bail -1 newt-decode:
+click -kp /path/to/pier '=/  m  (strand ,vase)  (pure:m !>(42))'
+# Even simple cases break once you need backticks, !>, or nested quotes.
+# There is no reliable way to shell-escape complex Hoon inline.
+```
+
+Reserve `-kp` inline only for the simplest expressions (no backticks, no `!>`). For everything else, write to a temp file and use `-k -i`.
+
+## Known Error: `conn: moor bail -1 newt-decode`
+
+This error means the command sent to conn.sock was malformed — usually due to shell escaping issues with inline click commands. It is **not** a ship problem.
+
+**Fix**: Switch to file-based threads (`-k -i file.hoon`) instead of inline strings.
+
+## Stale conn.sock After Shutdown
+
+After an ungraceful shutdown (kill -9, OOM kill, power loss), `conn.sock` persists as a stale file because the cleanup in `_conn_io_exit()` never runs. If you find a `conn.sock` but get "Connection refused", the ship is down and the socket is stale.
+
+```bash
+# Check if ship process is actually running
+pgrep -a urbit | grep pier-name
+```
+
+**You do NOT need to manually remove the stale socket.** Vere's `_conn_init_sock()` automatically unlinks any existing socket on startup before creating a new one. Just restart the ship:
+
+```bash
+urbit /path/to/pier
+```
+
+The stale socket is only a diagnostic concern: its presence does NOT mean the ship is running. **Always check for a running process before trusting that conn.sock means the ship is alive.**
+
 ## Step 1: Discover Running Ships
 
 Before sending any commands, locate the target ship's pier and verify it is running.
@@ -26,11 +75,14 @@ find ~/zod ~/bus ~/piers ~/urbit ~/.urbit /home/*/piers -name "conn.sock" -path 
 find ~/ -maxdepth 5 -name "conn.sock" -path "*/.urb/*" 2>/dev/null
 ```
 
-If the user provides a pier path directly, verify:
+If the user provides a pier path directly, verify **both** the socket and the process:
 
 ```bash
-# Check conn.sock exists and ship is running
+# Check conn.sock exists
 ls -la /path/to/pier/.urb/conn.sock
+
+# ALSO verify ship process is running (socket can be stale)
+pgrep -a urbit | grep pier-name
 ```
 
 ### Health Check
@@ -323,3 +375,6 @@ click-format -k '<hoon-code>' | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/c
 - Never inject `%ovum` events without explicit user confirmation
 - For maintenance ops (`|pack`, `|meld`), warn the user these can take significant time on large piers
 - Always use `-W 1` (1 second timeout) with `nc` to avoid hanging on unresponsive sockets
+- Prefer file-based threads (`-k -i`) over inline (`-kp`) to avoid shell escaping errors
+- If `conn: moor bail -1 newt-decode` appears, the command was malformed — switch to file-based threads
+- A `conn.sock` file does NOT guarantee the ship is running — check for a live process with `pgrep -a urbit`

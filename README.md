@@ -15,11 +15,11 @@ These skills give coding agents practical knowledge of the Urbit runtime, Hoon p
 
 ## What's Included
 
-**87 skills** across four categories:
+**89 skills** across four categories:
 
 | Category | Count | Purpose |
 |----------|-------|---------|
-| Knowledge | 53 | Reference material for Hoon, Nock, Arvo, and infrastructure |
+| Knowledge | 55 | Reference material for Hoon, Nock, Arvo, and infrastructure |
 | Workflow | 26 | Multi-phase processes for development, deployment, and ops |
 | Assistant | 6 | Interactive guidance for coding, debugging, and optimization |
 | Interaction | 2 | Direct ship communication via conn.sock and terminal |
@@ -48,6 +48,8 @@ These skills give coding agents practical knowledge of the Urbit runtime, Hoon p
 | [fleet-operations](./skills/fleet-operations/) | Knowledge | Terraform IaC, Helm, staged OTA updates |
 | [managed-hosting-comparison](./skills/managed-hosting-comparison/) | Knowledge | Tlon, Red Horizon, and hosting providers |
 | [minio-s3-integration](./skills/minio-s3-integration/) | Knowledge | Self-hosted S3 for ship storage |
+| [roller-azimuth](./skills/roller-azimuth/) | Knowledge | L2 roller API, Azimuth point lookups, @p conversion |
+| [batch-thread-patterns](./skills/batch-thread-patterns/) | Knowledge | Chunking strategies, poke batches, thread patterns for bulk ops |
 | [performance-engineer-assistant](./skills/performance-engineer-assistant/) | Assistant | Performance troubleshooting and tuning |
 | [deploy-planet-workflow](./skills/deploy-planet-workflow/) | Workflow | Bare-metal planet deployment (10 phases) |
 | [deploy-vps-planet-workflow](./skills/deploy-vps-planet-workflow/) | Workflow | VPS-optimized deployment |

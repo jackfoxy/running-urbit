@@ -19,6 +19,7 @@ The troubleshoot-ship command provides structured diagnostic paths for:
 4. **OTA Update Failures**: Blocked apps, sponsor issues, hash mismatches
 5. **Performance Degradation**: CPU usage, disk I/O, pier bloat, agent issues
 6. **Pier Corruption**: Event log damage, restoration procedures, factory reset
+7. **Stale conn.sock**: Ship down but socket file exists after ungraceful shutdown
 
 ## Configuration Options
 
@@ -788,6 +789,53 @@ urbit -c new-comet
 - [ ] No crash for 24+ hours
 - [ ] Automated backups scheduled
 - [ ] Backup restoration tested
+
+---
+
+### 7. Stale conn.sock Diagnostics
+
+**Invocation**: Ship appears down but `conn.sock` file exists, "Connection refused" when using click/nc
+
+**Decision Tree**:
+
+```
+┌─ START: Stale conn.sock ─┐
+│                            │
+└───────────┬────────────────┘
+            │
+            ▼
+    ┌───────────────┐
+    │ conn.sock     │
+    │ exists but    │
+    │ "Connection   │
+    │ refused"?     │
+    └───────┬───────┘
+            │
+            ├─► Step 1: Check if ship process is running
+            │   └─► pgrep -a urbit | grep pier-name
+            │   └─► If no process found → socket is STALE
+            │
+            ├─► Step 2: Restart ship (vere auto-cleans stale socket on startup)
+            │   └─► urbit /path/to/pier
+            │   └─► Verify new conn.sock is created
+            │   └─► Test: echo "[0 %peel /live]" | urbit eval -jn | nc -U -W 1 /path/to/pier/.urb/conn.sock | urbit eval -cn
+            │
+            └─► Prevention:
+                └─► Always shut down gracefully (ctrl+d in dojo, or systemctl stop)
+                └─► kill -9 and power failures leave stale sockets
+                └─► Vere auto-cleans stale sockets on startup (no manual cleanup needed)
+```
+
+**Common Cause**: Ungraceful shutdown (kill -9, power loss, OOM kill). The Unix domain socket file is not automatically cleaned up when the process dies unexpectedly.
+
+**Resolution**:
+```bash
+# Verify ship is actually down
+pgrep -a urbit | grep pier-name
+
+# Just restart — vere auto-cleans stale socket on startup
+urbit /path/to/pier
+```
 
 ---
 

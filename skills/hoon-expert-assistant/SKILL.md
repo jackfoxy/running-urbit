@@ -95,6 +95,44 @@ Provides expert guidance for writing idiomatic, type-safe, and performant Hoon c
 --
 ```
 
+## Critical Syntax Pitfalls
+
+### Number Formatting
+
+Hoon requires dot-separated groups of three digits for any number over 999:
+
+```hoon
+::  CORRECT
+1.000
+844.494
+1.000.000
+
+::  WRONG — parser error with no helpful message
+1000      ::  Error: {1 4}
+844494    ::  Error: {1 6}
+1000000   ::  Error: {1 7}
+```
+
+The error message (e.g. `{1 52}`) gives only a line/column position with no mention of number formatting. This is one of the most common sources of hard-to-diagnose Hoon errors.
+
+### Backtick Escaping from Python
+
+When generating Hoon code from Python, backtick (`` ` ``) characters conflict with string formatting and f-strings. Use `\x60` as the Python-safe escape:
+
+```python
+# Python: generating a Hoon type cast
+hoon_code = f"\x60@ud\x60value"  # produces `@ud`value
+```
+
+In bash, single-quoted strings pass backticks through safely — no escaping needed:
+
+```bash
+# Bash: single-quoted strings are safe
+echo '`@ud`value'  # backticks are literal, no escaping required
+```
+
+This is especially relevant when writing Hoon to files for conn.c thread execution.
+
 ## Debugging Type Errors
 
 ### Common Issues

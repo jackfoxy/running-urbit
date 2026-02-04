@@ -223,6 +223,17 @@ diff /tmp/urbit-before.txt /tmp/urbit-after.txt | grep '^>' | sed 's/^> //'
 3. **Long-running operations** — warn the user that `|pack`, `|meld`, and `|bump` can take significant time and will block the ship during execution
 4. **Never send Ctrl+D** — this detaches the terminal from the ship process; if running directly (not in screen/tmux), this will shut the ship down
 
+## Critical Warning: Garbled Dojo Input is Permanent
+
+**If garbled or malformed input is sent to the dojo via `tmux send-keys` or `screen -X stuff`, it becomes part of the permanent event log.** It persists across restarts and cannot be cleared. There is no way to undo garbled dojo input.
+
+**Recommendation**: For programmatic ship interaction, strongly prefer `conn.c` (see the `urbit-conn` skill) over terminal multiplexer send-keys. The conn.c socket provides structured command injection without the risk of corrupting the dojo input buffer.
+
+Use `tmux send-keys` / `screen -X stuff` only for:
+- Simple, well-tested dojo commands (e.g. `+vats`, `|pack`)
+- Interactive sessions where a human is monitoring output
+- Cases where conn.c is unavailable
+
 ## Troubleshooting
 
 ### "No screen session found" / "session not found"

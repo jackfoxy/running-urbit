@@ -509,7 +509,45 @@ Send a response/update:
   [[404 ~] `(as-octs:mimes:html 'Not Found')]
 ```
 
-## 7. Patterns and Best Practices
+## 7. Common Agent Poke Examples
+
+### Poking %pals (Add a Pal)
+
+`%pals` is one of the most common agents for programmatic interaction. Its poke type requires a mandatory tag set:
+
+```hoon
+::  %pals command type: [%meet =ship in=(set @ta)]
+::  The tag set (in) is MANDATORY — use ~ for empty set
+
+::  Add a pal with no tags
+:pals &pals-command [%meet ~sampel-palnet ~]
+
+::  Add a pal with tags
+:pals &pals-command [%meet ~sampel-palnet (silt ~['friend' 'dev'])]
+
+::  Remove a pal (empty tag set = remove from all tags)
+:pals &pals-command [%part ~sampel-palnet ~]
+
+::  Remove a pal from specific tags only
+:pals &pals-command [%part ~sampel-palnet (silt ~['dev'])]
+```
+
+**Gotcha**: Both `%meet` and `%part` require the `in=(set @ta)` tag set argument. Omitting it causes a silent `%exit` with no useful error message. Always include the tag set, even if empty (`~`). For `%part`, an empty set means un-target from all tags.
+
+Via conn.c thread (file-based):
+```hoon
+::  /tmp/add-pal.hoon
+=/  m  (strand ,vase)
+;<  our=@p  bind:m  get-our
+;<  ~  bind:m  (poke [our %pals] %pals-command !>([%meet ~sampel-palnet ~]))
+(pure:m !>('success'))
+```
+
+```bash
+click -k -i /tmp/add-pal.hoon /path/to/pier
+```
+
+## 8. Patterns and Best Practices
 
 ### Pattern 1: Action Types
 
@@ -587,7 +625,7 @@ Send a response/update:
   ==
 ```
 
-## 8. Testing and Debugging
+## 9. Testing and Debugging
 
 ### Using `dbug`
 
