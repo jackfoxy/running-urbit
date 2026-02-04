@@ -1,6 +1,9 @@
 ---
 name: urbit-terminal
 description: Attach to a running Urbit ship's interactive dojo terminal via screen or tmux. Use when the user wants to interact with the dojo directly, send dojo commands to a ship running in a terminal multiplexer, read dojo output, or manage an interactive urbit session. Triggers include "attach to ship", "dojo", "send dojo command", "ship terminal", "screen urbit", "tmux urbit", "interactive urbit".
+user-invocable: true
+disable-model-invocation: false
+argument-hint: <command> <session-name>
 ---
 
 # Urbit Interactive Terminal (screen/tmux)
