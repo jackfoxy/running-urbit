@@ -3,6 +3,8 @@ name: functional-programming-patterns
 description: Master functional programming patterns in Hoon including pure functions, immutability, higher-order functions, composition, recursion, and functional data transformation. Use when designing clean, maintainable, testable code or applying map/filter/fold operations.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Functional Programming Patterns Skill

@@ -3,6 +3,9 @@ name: nock-optimization-specialist-assistant
 description: Nock performance optimization expert for achieving 10x-1000x speedups through jetting, profiling, and runtime acceleration. Use when optimizing slow Nock formulas, implementing jet acceleration, or analyzing performance bottlenecks.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: would be good to get ~dozreg-toplud's review on this
 ---
 
 # Nock Optimization Specialist

@@ -3,6 +3,8 @@ name: nock-interpreter-patterns
 description: Design patterns and architectures for building Nock virtual machines including evaluation loops, pattern matching strategies, error handling, tail call optimization, and memory management. Use when building Nock interpreters, optimizing evaluation performance, or understanding interpreter architecture.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Interpreter Patterns Skill

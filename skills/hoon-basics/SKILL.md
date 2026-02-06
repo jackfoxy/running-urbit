@@ -3,6 +3,8 @@ name: hoon-basics
 description: Quick reference for Hoon syntax fundamentals including rune forms, data types, gates, and common idioms. Use when needing fast syntax lookups, verifying rune usage, or resolving common gotchas for developers with working Hoon knowledge.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Basics Quick Reference

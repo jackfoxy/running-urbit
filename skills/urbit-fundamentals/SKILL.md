@@ -3,6 +3,8 @@ name: urbit-fundamentals
 description: Deep understanding of Urbit's architecture including Nock, Hoon, Arvo OS, Vere runtime, vanes (kernel modules), loom memory model, event log, Azimuth identity system, and Ames networking. Use when explaining Urbit internals, diagnosing low-level issues, architecting deployments, or understanding system constraints.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Urbit Fundamentals Skill
@@ -199,7 +201,7 @@ And produces:
 Check Vere version:
 ```bash
 urbit --version
-# Output: Urbit vere v3.2
+# Output: Urbit vere v4.2
 ```
 
 Update Vere:
@@ -315,6 +317,7 @@ urbit --loom 32 /path/to/pier
 
 # IMPORTANT: Must use same --loom on every subsequent boot
 # Loom size is "sticky" - once set, must be maintained
+# unless `meld` or `pack` brings loom size underneath the previous cap
 ```
 
 ### The 2GB Limit and "Out of Loom" Errors
@@ -357,6 +360,9 @@ urbit --loom 32 /path/to/pier  # 4GB loom
 3. **Emergency cleanup**: Use `|meld` if ship approaching 2GB and cannot increase loom
 4. **Plan for growth**: Consider 4GB loom for heavily-used ships
 5. **System resources**: Ensure host has 2x loom size in RAM (for |meld)
+
+### Future Capabilities
+- the `vere64` project aims to ship in H1 of 2026 and will free the Urbit runtime from the loom size limitation, thus making it possible to store incredibly large amount of large files in your urbit (10s of TB). 
 
 ### Reference
 
@@ -761,8 +767,6 @@ Understanding Urbit fundamentals informs operational decisions:
 ### Official Documentation
 
 - **docs.urbit.org**: Primary documentation hub
-- **developers.urbit.org**: Developer guides, API references
-- **operators.urbit.org**: Archived operator guides (redirects to docs.urbit.org)
 
 ### Courses
 
@@ -772,9 +776,9 @@ Understanding Urbit fundamentals informs operational decisions:
 
 ### Community Resources
 
-- **Urbit Community**: https://urbit.org/community
 - **GitHub**: https://github.com/urbit/urbit (source code, issues)
-- **Urbit Foundation**: https://urbit.foundation (ecosystem development)
+- **nock.is**: Nock ISA / Language specific site
+- **urbitsystems.tech**: Technical Journal about Urbit and Solid-State Computing
 
 ## 14. Key Takeaways
 

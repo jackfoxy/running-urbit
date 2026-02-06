@@ -3,6 +3,8 @@ name: optimize-nock-performance-workflow
 description: Systematic performance optimization workflow including profiling, bottleneck identification, jetting, and benchmarking.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Optimize Nock Performance Command

@@ -3,6 +3,8 @@ name: container-security
 description: Docker and container security hardening for GroundSeg Urbit deployments including image scanning, runtime protection, network isolation, rootless containers, secrets management, and compliance. Use when securing Docker environments, hardening GroundSeg, implementing container best practices, or meeting containerized deployment security requirements.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Container Security Skill
@@ -29,9 +31,6 @@ services:
 ```bash
 # Scan for vulnerabilities
 docker scout cves nativeplanet/urbit:latest
-
-# Use Trivy (open-source scanner)
-docker run aquasec/trivy image nativeplanet/urbit:latest
 ```
 
 ### Pin Specific Versions
@@ -220,7 +219,7 @@ docker logs --since 1h urbit-ship
 ## Security Scanning
 
 ```bash
-# Scan running containers
+# Scan container image
 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
   aquasec/trivy image --severity HIGH,CRITICAL nativeplanet/urbit
 ```

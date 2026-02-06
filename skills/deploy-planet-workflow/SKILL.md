@@ -3,6 +3,8 @@ name: deploy-planet-workflow
 description: Complete bare-metal planet deployment workflow from system assessment to production validation with 10 orchestrated phases
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Deploy Planet Command
@@ -132,7 +134,7 @@ sudo chmod +x /usr/local/bin/urbit
 - **Keyfile is single-use**: After successful boot, it's consumed and useless
 - **Never backup keyfile after boot**: It cannot be reused
 - **Never share keyfile**: Compromises ship security
-- **Must delete after boot**: Use `shred -u keyfile.key` for secure deletion
+- **Must delete after boot**: Use `shred -u keyfile.key` for secure deletion after confirming a successful boot sequence
 
 **Success Criteria**:
 - Keyfile uploaded to server
@@ -160,22 +162,22 @@ urbit -w sampel-palnet -k /path/to/sampel-palnet.key
 
 **For Comet**:
 ```bash
-# Boot comet (generates identity)
+# Boot comet (generates identity, no keyfile required)
 cd ~/urbit-ships
 urbit -c my-comet
 ```
 
 **For Fake Ship** (development):
 ```bash
-# Boot fake ship
+# Boot fake ship (no keyfile required)
 cd ~/urbit-ships
 urbit -F zod
 ```
 
 **Monitor Initial Sync**:
-- Wait 10-30 minutes for planet initial sync
+- Wait 5-10 minutes for planet initial sync
 - Comet: 5-15 minutes
-- Fake ship: Instant (no sync)
+- Fake ship: 1-5 minutes (no sync over the network of out of date apps, networking state, etc)
 - Watch for "dojo>" prompt indicating readiness
 
 **Verify Dojo Access**:
@@ -691,4 +693,3 @@ The agent references these skills:
 - ship-deployment-guide (step-by-step procedures)
 - urbit-troubleshooting (diagnostic workflows)
 - performance-optimization (system tuning)
-

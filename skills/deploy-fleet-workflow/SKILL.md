@@ -3,6 +3,9 @@ name: deploy-fleet-workflow
 description: Large-scale Urbit fleet deployment workflow (10-1,000+ ships) with infrastructure provisioning, security, and validation.
 user-invocable: true
 disable-model-invocation: false
+validated: null
+checked-by: ~sarlev-sarsen
+notes: this skill is missing many essential steps to actually running real urbit infrastructure. It does not have any obviously malicious prompts, but it unlikely to actually successfully deploy an Urbit fleet.
 ---
 
 You are orchestrating the deployment of a large-scale Urbit fleet (10-1,000+ ships). This is a complex, multi-phase workflow requiring careful planning, infrastructure provisioning, security configuration, and validation.

@@ -3,6 +3,8 @@ name: urbit-conn
 description: Interact with a running Urbit ship programmatically via the conn.c Unix domain socket. Use when the user wants to send commands to a ship, run Hoon code, scry ship state, manage OTAs, install desks, run threads, or perform maintenance operations (pack, meld) on a running Urbit ship without using the interactive dojo. Triggers include "send command to ship", "scry", "run thread", "pack ship", "meld", "eval hoon", "ship maintenance", "conn.c", "click".
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 argument-hint: <command> [pier-path]
 ---
 

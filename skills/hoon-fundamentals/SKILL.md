@@ -3,6 +3,8 @@ name: hoon-fundamentals
 description: Architectural reference for subject-oriented programming, noun data model, and Hoon-to-Nock compilation. Use when debugging low-level issues, working with subject transformations, understanding compilation semantics, or architecting noun-level operations.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Fundamentals: Architectural Reference

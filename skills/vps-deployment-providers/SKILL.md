@@ -3,6 +3,8 @@ name: vps-deployment-providers
 description: Comprehensive comparison of VPS providers for Urbit hosting including Hetzner, DigitalOcean, Linode, Vultr, AWS Lightsail, and OVH with 2025 pricing, performance benchmarks, and provider-specific optimizations. Use when selecting VPS providers, comparing hosting costs, optimizing cloud deployments, or recommending infrastructure options.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # VPS Deployment Providers Skill

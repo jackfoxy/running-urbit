@@ -3,6 +3,9 @@ name: backup-disaster-recovery
 description: Comprehensive backup strategies and recovery procedures for Urbit ships including automated backups, 3-2-1 backup rule, safe pier backup procedures, recovery testing, and business continuity planning. Use when implementing backups, planning disaster recovery, recovering from failures, or ensuring data protection.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: Some data recovery is possible with the Tlon app. Further improvement to this skill required to handle the nature of Urbit's backup and recovery story.
 ---
 
 # Backup and Disaster Recovery Skill
@@ -187,74 +190,22 @@ rsync -avz -e "ssh -p 2222" $BACKUP_DIR/ user@backup-server:/backups/
 
 ## Recovery Procedures
 
-### Standard Recovery (From Backup)
+Recovery of Urbit ships from a full pier backup is currently unsupported. Some applications, such as Tlon Messenger, may support backup and recovery of application state, but given Urbit's stateful networking model and current tooling, if an copy of a pier is used that does not have the most up to date state, it will be unable to network with peers across the network. While you will not be able to network with peers from an out-of-date backup, you can boot with the `-L` or `--local` flag to run in offline mode. In this mode, you can run without ames networking and manually retrieve any vital data out of your ship. 
 
-```bash
-# 1. Stop broken ship
-systemctl stop urbit-$SHIP_NAME
+In order to regain networking, you will need to perform a 'network breach' or factory reset. This will create a fresh instance of your ship without any data. You can then try to manually recover the application state that you may have lost.
 
-# 2. Move corrupted pier
-mv /home/urbit/$SHIP_NAME /home/urbit/$SHIP_NAME.corrupted
-
-# 3. Extract backup
-tar xzf $BACKUP_FILE -C /home/urbit/
-
-# 4. Verify extraction
-ls -la /home/urbit/$SHIP_NAME
-
-# 5. Set ownership
-chown -R urbit:urbit /home/urbit/$SHIP_NAME
-chmod 700 /home/urbit/$SHIP_NAME
-
-# 6. Start restored ship
-systemctl start urbit-$SHIP_NAME
-
-# 7. Verify successful boot
-journalctl -u urbit-$SHIP_NAME -n 50 -f
-
-# 8. Access dojo
-# Should see dojo prompt without errors
-```
-
-### Point-in-Time Recovery
-
-```bash
-# List available backups
-ls -lh /backups/urbit/sampel-palnet-*.tar.gz
-
-# Choose backup from specific date
-tar xzf /backups/urbit/sampel-palnet-20250101-030000.tar.gz -C /home/urbit/
-```
-
-### Partial Recovery (Corrupted Files)
-
-```bash
-# Extract specific files from backup
-tar xzf backup.tar.gz path/to/specific/file
-```
-
-## Disaster Scenarios
+## Failure Scenarios
 
 ### Scenario 1: Hardware Failure (Total Loss)
 
 **Recovery Steps**:
-1. Provision new server (same OS version)
-2. Install dependencies, Urbit binary
-3. Create urbit user account
-4. Download latest backup from offsite storage
-5. Extract pier
-6. Start ship
-7. Verify all functionality
-
-**RTO** (Recovery Time Objective): 2-4 hours
-**RPO** (Recovery Point Objective): Last backup (24 hours max)
+1. Factory Reset (aka 'breach')
 
 ### Scenario 2: Pier Corruption
 
 **Recovery Steps**:
-1. Attempt event replay: `urbit-worker replay pier/`
-2. If fails, restore from latest backup
-3. If no backup, factory reset (data loss)
+1. Attempt event replay: `./urbit replay pier/`
+3. If replay fails, factory reset (will result in data loss)
 
 **RTO**: 30 minutes
 **RPO**: Last backup
@@ -262,12 +213,7 @@ tar xzf backup.tar.gz path/to/specific/file
 ### Scenario 3: Accidental Deletion
 
 **Recovery Steps**:
-1. Stop any running ship processes
-2. Restore from most recent backup
-3. Verify data integrity
-
-**RTO**: 15 minutes
-**RPO**: Last backup
+1. Factory Reset (aka 'breach')
 
 ### Scenario 4: Keyfile Loss (Planet)
 
@@ -289,46 +235,14 @@ tar xzf backup.tar.gz path/to/specific/file
 **Impact**: Comet = pier (no identity recovery)
 
 **Prevention**:
-- Regular backups (only recovery method)
-- Upgrade to planet for valuable comets
+- Comets should be used for empheral identities.
 
 **Recovery**:
-- Restore from backup (if available)
-- If no backup: Comet permanently lost, generate new (different identity)
+- Because comets cannot do key rotation, an urbit ship with a comet identity that gets into a bad networking state is permanently lost, generate new (different identity)
 
 ## GroundSeg Multi-Ship Backup
 
-```bash
-# Backup all ships in GroundSeg
-#!/bin/bash
-BACKUP_DIR="/backups/groundseg-$(date +%Y%m%d)"
-mkdir -p $BACKUP_DIR
-
-# Stop GroundSeg (stops all ships)
-cd /opt/groundseg
-docker-compose down
-
-# Wait for shutdown
-sleep 60
-
-# Backup each pier
-for pier in ./piers/*; do
-    tar czf "$BACKUP_DIR/$(basename $pier).tar.gz" "$pier"
-done
-
-# Backup configuration
-cp docker-compose.yml $BACKUP_DIR/
-cp .env $BACKUP_DIR/
-
-# Backup MinIO data (if using)
-tar czf "$BACKUP_DIR/minio-data.tar.gz" ./minio-data
-
-# Restart GroundSeg
-docker-compose up -d
-
-# Upload to S3
-aws s3 sync $BACKUP_DIR s3://groundseg-backups/$(date +%Y%m%d)/
-```
+If running your ship with Groundseg and Native Planet's Startram service, they offer automatic encrypted backups of your Tlon Messenger state. Contact support@nativeplanet.io for help if you encounter data loss for your Startram enabled ships.
 
 ## Backup Verification
 
@@ -375,12 +289,11 @@ rm -rf /tmp/restore-test
 
 ## Best Practices Checklist
 
-- [ ] Automated daily backups configured
 - [ ] Backups stop ship before creation (never live)
 - [ ] Backup verification (tar tzf) succeeds
 - [ ] Offsite storage configured (S3/B2/rsync)
 - [ ] 3-2-1 rule implemented
-- [ ] Retention policy: 7 daily, 4 weekly, 12 monthly
+- [ ] Retention policy: 4 weekly, 12 monthly
 - [ ] Master ticket stored securely offline
 - [ ] Recovery procedures documented
 - [ ] Quarterly restoration tests scheduled
@@ -392,9 +305,9 @@ rm -rf /tmp/restore-test
 
 1. **Backing up live pier**: Corrupts event log (always stop first)
 2. **No offsite backups**: Single point of failure
-3. **Untested restorations**: Backups may be invalid
+3. **Untested restorations**: Backups may be invalid if from a previous networking state
 4. **Storing keyfile after boot**: Security risk, useless
-5. **No master ticket backup**: Cannot factory reset planet
+5. **No master ticket backup**: Cannot factory reset planet without private keys
 6. **Insufficient retention**: Can't recover from discovered corruption
 7. **No monitoring**: Backup failures go unnoticed
 8. **Weak access controls**: Backup credentials compromised
@@ -409,4 +322,4 @@ rm -rf /tmp/restore-test
 
 ## Summary
 
-Effective Urbit backup requires stopping ships before backup (never backup live piers), implementing 3-2-1 rule (3 copies, 2 media types, 1 offsite), automated scheduling (weekly via cron), backup verification (tar integrity check), and quarterly restoration testing. Recovery procedures vary by disaster scenario (hardware failure, pier corruption, keyfile loss, comet loss) with defined RTO/RPO targets. Master tickets must be stored securely offline for planet recovery. GroundSeg deployments require multi-ship backup orchestration. Document all procedures, monitor backup success, and test restorations regularly.
+URBIT'S BACKUP AND RECOVERY STORY IS STILL NASCENT. BECAUSE OF URBIT'S STATEFUL NETWORKING AND NATURE AS A DETERMINISTIC OPERATING FUNCTION, BACKUP AND RECOVERY IS NOT AS SIMPLE AS KEEPING ADDITIONAL OLD COPIES OF YOUR URBIT PIER AND REBOOTING FROM AN OLDER STATE. REBOOTING FROM AN OLDER STATE SHOULD ONLY BE DONE WITH AMES NETWORKING DISABLED. Effective Urbit backup requires stopping ships before backup (never backup live piers), implementing 3-2-1 rule (3 copies, 2 media types, 1 offsite), automated scheduling (weekly via cron), backup verification (tar integrity check), and quarterly restoration testing. Recovery procedures vary by disaster scenario (hardware failure, pier corruption, keyfile loss, comet loss) with defined RTO/RPO targets. Master tickets must be stored securely offline for planet recovery. GroundSeg deployments require multi-ship backup orchestration. Document all procedures, monitor backup success, and test restorations regularly.

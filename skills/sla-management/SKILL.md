@@ -3,6 +3,8 @@ name: sla-management
 description: Service Level Agreement (SLA) management for Urbit deployments including Service Level Indicators (SLIs), Service Level Objectives (SLOs), availability targets, incident response, error budgets, and SLA frameworks. Use when defining SLAs, setting uptime targets, managing incidents, or implementing SRE practices.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # SLA Management Skill

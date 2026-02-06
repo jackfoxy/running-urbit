@@ -3,6 +3,8 @@ name: nock-fundamentals-tutor-assistant
 description: Nock fundamentals educator for teaching atoms, cells, nouns, tree addressing, cores, and reduction model. Use when learning Nock from scratch, understanding core concepts before building interpreters, or teaching Nock to implementers.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Fundamentals Tutor

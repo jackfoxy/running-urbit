@@ -3,6 +3,8 @@ name: performance-engineer-assistant
 description: Urbit ship performance optimization expert for tuning CPU, disk I/O, memory, and network. Use when optimizing ship performance, troubleshooting bottlenecks, planning capacity, or setting up monitoring and SLAs.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Performance Engineer

@@ -3,6 +3,8 @@ name: troubleshoot-ship-workflow
 description: Systematic diagnostic workflows for common Urbit issues with 6 decision trees covering boot, memory, network, OTA, performance, and pier corruption
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Troubleshoot Ship Command
@@ -145,8 +147,8 @@ System Context:
 
 ```
 ┌─ START: Memory Problems ─┐
-│                           │
-└───────────┬───────────────┘
+│                          │
+└───────────┬──────────────┘
             │
             ▼
     ┌───────────────┐
@@ -263,8 +265,8 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
 
 ```
 ┌─ START: Network Issues ─┐
-│                          │
-└───────────┬──────────────┘
+│                         │
+└───────────┬─────────────┘
             │
             ▼
     ┌───────────────┐
@@ -380,8 +382,8 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
 
 ```
 ┌─ START: OTA Not Working ─┐
-│                           │
-└───────────┬───────────────┘
+│                          │
+└───────────┬──────────────┘
             │
             ▼
     ┌───────────────┐
@@ -492,8 +494,8 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
 
 ```
 ┌─ START: Performance Issues ─┐
-│                              │
-└───────────┬──────────────────┘
+│                             │
+└───────────┬─────────────────┘
             │
             ▼
     ┌───────────────┐
@@ -628,8 +630,8 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
 
 ```
 ┌─ START: Pier Corruption ─┐
-│                           │
-└───────────┬───────────────┘
+│                          │
+└───────────┬──────────────┘
             │
             ▼
     ┌───────────────┐
@@ -720,7 +722,7 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
    # WRONG (will create corrupted backup):
    tar czf backup.tar.gz pier/  # While ship is RUNNING
 
-   # CORRECT (safe backup):
+   # ACCEPTABLE (QUASI-safe backup):
    # In dojo: ctrl+d (stop ship)
    sleep 30  # Wait for process to stop
    tar czf backup.tar.gz pier/
@@ -757,6 +759,12 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
    tar xzf backup.tar.gz -C /tmp/restore-test
    urbit /tmp/restore-test/pier/ --dry-run  # Test boot
    ```
+   WARNING ABOUT BACKUPS: BOOTING FROM AN OLD COPY OF A PIER,
+   DIFFERENT FROM THE LATEST VERSION OF YOUR SHIP THAT HAS
+   RUN LIVE ON THE NETWORK WILL CAUSE YOU TO LOSE THE ABILITY 
+   TO COMMUNICATE WITH ANY SHIP THAT YOU ALREADY HAVE CONNECTED
+   WITH. FIXING THIS WILL REQUIRE A 'BREACH' / FACTORY RESET 
+   AND MAY RESULT IN DATA LOSS.
 
 **Factory Reset (Last Resort)**:
 
@@ -769,6 +777,9 @@ chmod +x /usr/local/bin/urbit-maintenance.sh
 rm -rf /path/to/old-pier/
 # 4. Boot with new keyfile
 urbit -w new-ship-name -k new-keyfile.key
+# Your state will be brand new, but network participants
+# will recognize you as having a consistent identity,
+# likely readmitting you to groups, access lists, etc.
 ```
 
 **For Comets** (identity = pier, cannot re-boot):
@@ -800,8 +811,8 @@ urbit -c new-comet
 
 ```
 ┌─ START: Stale conn.sock ─┐
-│                            │
-└───────────┬────────────────┘
+│                          │
+└───────────┬──────────────┘
             │
             ▼
     ┌───────────────┐

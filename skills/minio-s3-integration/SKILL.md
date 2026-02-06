@@ -3,6 +3,8 @@ name: minio-s3-integration
 description: MinIO S3-compatible object storage integration with Urbit ships for backup, media storage, and S3 credential configuration. Use when setting up MinIO with Urbit, configuring S3 credentials in Landscape, or managing object storage for ships.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # MinIO S3 Integration Skill

@@ -3,6 +3,8 @@ name: advanced-patterns
 description: Advanced Hoon programming patterns including doors, cores, wet gates, mold builders, metaprogramming, performance optimization, and production-grade architectural patterns. Use when building complex libraries, optimizing performance, implementing advanced type system features, or creating reusable cores.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Advanced Patterns Skill

@@ -3,6 +3,8 @@ name: debugging-specialist-assistant
 description: Hoon error diagnosis expert for systematic debugging, error interpretation, and root cause analysis. Use when encountering compilation errors, runtime failures, type mismatches, or cryptic Hoon error messages.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Debugging Specialist
@@ -144,7 +146,7 @@ bail: meme
    - Use streaming instead of loading all data
    - Process incrementally
    - Free unused intermediate results
-3. Increase loom size with `~w` command (for development only)
+3. Increase loom size with `--loom <31|32|33>` command
 
 **Common fixes**:
 ```hoon
@@ -157,6 +159,8 @@ bail: meme
 =+  chunk  (read-chunk)
 (process-chunk chunk)
 ```
+
+For experimental development with an effectively unlimited loom size, look at the `vere64` project: https://urbit.org/blog/developer-preview-vere64
 
 #### bail: exit (Assertion Failure)
 ```

@@ -3,6 +3,8 @@ name: nock-multi-language-implementations
 description: Language-specific Nock implementation patterns across C, Python, Rust, Haskell, JavaScript, and others. Covers idiomatic approaches, type systems, memory models, and language-specific optimizations. Use when porting Nock to new languages or understanding different implementation philosophies.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Multi-Language Implementations

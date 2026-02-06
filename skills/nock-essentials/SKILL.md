@@ -3,6 +3,8 @@ name: nock-essentials
 description: Foundational Nock concepts including nouns (atoms and cells), reduction model, evaluation semantics, and basic data representation. Covers the minimal computational substrate: natural numbers, ordered pairs, and pattern matching. Use when learning Nock fundamentals, understanding the noun model, or implementing basic data structures for Nock interpreters.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Essentials Skill

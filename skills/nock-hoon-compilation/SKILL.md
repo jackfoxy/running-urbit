@@ -3,6 +3,8 @@ name: nock-hoon-compilation
 description: Understanding how Hoon high-level code compiles to Nock assembly. Covers compilation patterns, AST transformations, core generation, and analyzing compiler output. Use when debugging Hoon performance, understanding Hoon→Nock mapping, or optimizing compiled code.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock-Hoon Compilation

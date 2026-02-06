@@ -3,6 +3,8 @@ name: setup-production-workflow
 description: Comprehensive 20-phase production hardening workflow for Urbit ships with enterprise security, monitoring, and operational excellence
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Setup Production Command
@@ -1205,156 +1207,8 @@ Documentation:
 
 **Objective**: Implement automated, encrypted backups with offsite storage
 
-**Tasks**:
-1. Create backup directory structure:
-   ```bash
-   sudo mkdir -p /backups/urbit
-   sudo chown urbit:urbit /backups/urbit
-   chmod 750 /backups/urbit
-   ```
-
-2. Create backup script:
-   ```bash
-   sudo nano /usr/local/bin/backup-urbit.sh
-   ```
-
-   **Backup Script** (safe, encrypted):
-   ```bash
-   #!/bin/bash
-   # Safe Urbit backup script
-   # CRITICAL: Stops ship before backup to prevent corruption
-
-   set -euo pipefail  # Exit on error, undefined var, pipe failure
-
-   # Configuration
-   SHIP_NAME="sampel-palnet"
-   PIER_PATH="/home/urbit/$SHIP_NAME"
-   BACKUP_DIR="/backups/urbit"
-   DATE=$(date +%Y%m%d-%H%M%S)
-   BACKUP_FILE="$BACKUP_DIR/$SHIP_NAME-$DATE.tar.gz"
-   RETENTION=7  # Keep last 7 backups
-
-   # Logging
-   LOG_FILE="/var/log/urbit-backup.log"
-   exec > >(tee -a "$LOG_FILE")
-   exec 2>&1
-
-   echo "=== Urbit Backup Started: $(date) ==="
-
-   # Step 1: Stop ship gracefully
-   echo "Stopping ship..."
-   systemctl stop urbit-$SHIP_NAME
-
-   # Step 2: Wait for process to fully stop
-   echo "Waiting for ship to stop completely..."
-   sleep 30
-
-   # Step 3: Verify ship stopped
-   if pgrep -f "urbit.*$SHIP_NAME" > /dev/null; then
-       echo "ERROR: Ship still running! Aborting backup."
-       systemctl start urbit-$SHIP_NAME
-       exit 1
-   fi
-
-   # Step 4: Backup pier
-   echo "Creating backup..."
-   tar czf "$BACKUP_FILE" -C /home/urbit "$SHIP_NAME"
-
-   # Step 5: Verify backup integrity
-   echo "Verifying backup..."
-   if ! tar tzf "$BACKUP_FILE" > /dev/null; then
-       echo "ERROR: Backup verification failed!"
-       rm -f "$BACKUP_FILE"
-       systemctl start urbit-$SHIP_NAME
-       exit 1
-   fi
-
-   # Step 6: Restart ship
-   echo "Restarting ship..."
-   systemctl start urbit-$SHIP_NAME
-
-   # Step 7: Wait for ship to start
-   sleep 10
-
-   # Step 8: Verify ship started successfully
-   if ! systemctl is-active --quiet urbit-$SHIP_NAME; then
-       echo "ERROR: Ship failed to restart!"
-       exit 1
-   fi
-
-   # Step 9: Encrypt backup (optional, requires gpg)
-   # echo "Encrypting backup..."
-   # gpg --symmetric --cipher-algo AES256 "$BACKUP_FILE"
-   # rm -f "$BACKUP_FILE"  # Remove unencrypted backup
-   # BACKUP_FILE="$BACKUP_FILE.gpg"
-
-   # Step 10: Cleanup old backups
-   echo "Cleaning up old backups (keeping last $RETENTION)..."
-   ls -t $BACKUP_DIR/$SHIP_NAME-*.tar.gz | tail -n +$((RETENTION + 1)) | xargs -r rm -f
-
-   # Step 11: Report backup size
-   BACKUP_SIZE=$(du -h "$BACKUP_FILE" | cut -f1)
-   echo "Backup completed: $BACKUP_FILE ($BACKUP_SIZE)"
-   echo "=== Backup Finished: $(date) ==="
-   ```
-
-3. Make script executable:
-   ```bash
-   sudo chmod +x /usr/local/bin/backup-urbit.sh
-   ```
-
-4. Test backup script:
-   ```bash
-   # Test run
-   sudo /usr/local/bin/backup-urbit.sh
-
-   # Verify backup created
-   ls -lh /backups/urbit/
-
-   # Verify ship restarted
-   sudo systemctl status urbit-sampel-palnet
-   ```
-
-5. Schedule automated backups:
-   ```bash
-   sudo crontab -e
-   ```
-
-   **Cron Schedule** (weekly backups on Sunday 3 AM):
-   ```
-   # Urbit backup - Every Sunday at 3:00 AM
-   0 3 * * 0 /usr/local/bin/backup-urbit.sh
-
-   # Or daily backups at 2:00 AM:
-   # 0 2 * * * /usr/local/bin/backup-urbit.sh
-   ```
-
-6. Set up offsite backup (optional, recommended for production):
-   ```bash
-   # Option 1: S3 sync
-   # Install AWS CLI: sudo apt install awscli
-   # Add to backup script:
-   # aws s3 cp "$BACKUP_FILE" s3://my-urbit-backups/
-
-   # Option 2: rsync to remote server
-   # Add to backup script:
-   # rsync -avz "$BACKUP_FILE" backup-server:/backups/urbit/
-
-   # Option 3: Backblaze B2 (cost-effective)
-   # Install b2 CLI: sudo pip3 install b2
-   # Add to backup script:
-   # b2 upload-file my-bucket "$BACKUP_FILE" "$SHIP_NAME-$DATE.tar.gz"
-   ```
-
-**Success Criteria**:
-- [ ] Backup directory created (/backups/urbit)
-- [ ] Backup script created and executable
-- [ ] Test backup successful (ship stops → backup → restarts)
-- [ ] Backup integrity verified (tar tzf succeeds)
-- [ ] Cron job scheduled (weekly or daily)
-- [ ] Retention policy enforced (7 backups kept)
-- [ ] Offsite backup configured (optional)
-- [ ] Backup logs writing to /var/log/urbit-backup.log
+**Tasks**
+UNIX STYLE BACKUPS NOT CURRENTLY SUPPORTED FOR URBIT SHIPS. 
 
 ---
 
@@ -1546,7 +1400,7 @@ Documentation:
    ## Contact Information
    - On-Call Admin: +1-555-0100
    - Email: admin@example.com
-   - Urbit Community: https://urbit.org/community
+   - Urbit Foundation Support: support@urbit.org 
 
    ## Post-Incident Review
    After resolving incident:

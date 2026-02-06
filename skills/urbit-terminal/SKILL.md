@@ -3,6 +3,9 @@ name: urbit-terminal
 description: Attach to a running Urbit ship's interactive dojo terminal via screen or tmux. Use when the user wants to interact with the dojo directly, send dojo commands to a ship running in a terminal multiplexer, read dojo output, or manage an interactive urbit session. Triggers include "attach to ship", "dojo", "send dojo command", "ship terminal", "screen urbit", "tmux urbit", "interactive urbit".
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: needs updated phenome lists incorporated into bash commands
 argument-hint: <command> <session-name>
 ---
 
@@ -240,6 +243,7 @@ Use `tmux send-keys` / `screen -X stuff` only for:
 - The ship may not be running in screen/tmux
 - Check if it's running as a bare process: `pgrep -a urbit`
 - Consider using the `urbit-conn` skill instead (conn.c socket doesn't require screen/tmux)
+- Most systems come with either screen or tmux installed, but it is not available advise the user to install tmux or screen before proceeding
 
 ### Commands appear to hang
 - The ship may be processing a long computation (spinner shows in terminal)

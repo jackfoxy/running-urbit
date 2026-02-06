@@ -3,6 +3,8 @@ name: nock-metacircular-evaluation
 description: Self-interpretation patterns in Nock including +mock (Nock-in-Nock), virtualization, sandboxing, and the Urbit lifecycle function. Covers running Nock formulas within Nock itself for testing, debugging, and secure execution. Use when implementing interpreters within interpreters or understanding Nock's self-hosting capabilities.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Metacircular Evaluation

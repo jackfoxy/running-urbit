@@ -3,6 +3,8 @@ name: learn-nock-fundamentals-workflow
 description: Interactive 5-phase learning path for mastering Nock fundamentals from nouns through cores.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Learn Nock Fundamentals Command

@@ -3,6 +3,8 @@ name: urbit-troubleshooting
 description: Systematic diagnostic procedures and decision trees for resolving Urbit issues including boot failures, network problems, performance degradation, OTA update failures, and pier corruption. Use when diagnosing ship problems, resolving errors, investigating performance issues, or implementing systematic troubleshooting workflows.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Urbit Troubleshooting Skill

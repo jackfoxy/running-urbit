@@ -3,6 +3,9 @@ name: nock-interpreter-engineer-assistant
 description: Expert Nock interpreter builder for implementing virtual machines in C, Python, Rust, Haskell, or JavaScript. Use when building Nock interpreters, porting between languages, implementing evaluation loops, or understanding Nock runtime behavior.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+
 ---
 
 # Nock Interpreter Engineer

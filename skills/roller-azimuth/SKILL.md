@@ -3,6 +3,8 @@ name: roller-azimuth
 description: Urbit L2 roller API and Azimuth point lookups. Use when querying Azimuth PKI state, looking up spawned planets, converting point numbers to @p, or interacting with the L2 roller JSON-RPC endpoint.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Roller API & Azimuth Point Lookups
@@ -13,7 +15,7 @@ Reference for querying Urbit's Azimuth PKI via the L2 roller API and on-chain co
 
 The roller provides a JSON-RPC interface for querying L2 (Layer 2) Azimuth state. L2 is where most planet operations happen (spawning, transfers, key changes).
 
-**Endpoint**: `https://roller.urbit.org/v1/roller`
+**Endpoint**: There is a publicly available endpoint at `https://roller.urbit.org/v1/roller` which is used for Bridge.urbit.org
 
 ### Common Methods
 
@@ -61,7 +63,7 @@ curl -s -X POST https://roller.urbit.org/v1/roller \
 
 ## Critical Gotcha: L1 vs L2 Spawned Planets
 
-**The L1 Azimuth contract's `getSpawned()` returns empty for L2-spawned planets.** Most planets spawned after ~2022 are L2. If you query the Ethereum contract directly and get an empty result, the planets likely exist on L2.
+**The L1 Azimuth contract's `getSpawned()` returns empty for L2-spawned planets.** Most planets spawned after ~2022 are L2. If you query the Ethereum contract directly and get an empty result, the planets likely exist on L2. Recommended to check if an ownership or spawn proxy is held by 0x1111...1111 as that is the 'L2 Dominion' address indicating point existence on L2.
 
 **Always use the roller API** (`getSpawned`) instead of the L1 contract for a complete list of spawned planets. The roller aggregates both L1 and L2 state.
 

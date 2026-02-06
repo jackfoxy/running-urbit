@@ -3,6 +3,8 @@ name: zuse-libraries
 description: Master Zuse (/sys/zuse.hoon), Urbit's extended standard library containing HTTP utilities, JSON handling, cryptography, parsing helpers, scry paths, and Arvo integration tools. Use when building Gall agents, working with HTTP/web APIs, implementing cryptography, or integrating with Arvo vanes.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Zuse Libraries Skill

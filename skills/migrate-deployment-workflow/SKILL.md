@@ -3,6 +3,8 @@ name: migrate-deployment-workflow
 description: Automated ship migration workflow between hosting environments (Tlon, VPS, Managed, Self-hosting) with zero-data-loss procedures
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 agents:
   - managed-hosting-advisor
   - urbit-deployment-specialist
@@ -41,7 +43,7 @@ Before starting migration:
 
 ### Phase 1: Pre-Migration Backup
 
-**Critical**: Never migrate without verified backup.
+**Critical**: Never migrate without verified backup; equally important is to never run your ship in two locations at the same time. Only the most recently run pier should ever be run. Failure to follow this guidance will result in a need to factor reset and likely dataloss.
 
 ```bash
 # On source environment:
@@ -91,7 +93,6 @@ sudo ufw enable
 - Confirm deployment slot availability
 
 **For self-hosting destination**:
-- Install GroundSeg: `sudo wget -O - get.groundseg.app|bash`
 - Prepare hardware (sufficient RAM/disk)
 - Configure network (StarTram or Anchor)
 

@@ -3,6 +3,8 @@ name: optimize-performance-workflow
 description: Automated performance optimization workflow for Urbit ships including profiling, bottleneck identification, and systematic tuning
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 agents:
   - performance-engineer
 skills:
@@ -117,7 +119,7 @@ fi
 
 # 3. Run |pack (defragmentation)
 |pack
-# Wait 10-60 minutes for completion
+# Wait 5-30 minutes for completion
 ```
 
 **Loom sizing** (if approaching 2GB limit):
@@ -126,7 +128,7 @@ fi
 sudo systemctl edit urbit-ship
 
 # Add loom parameter
-ExecStart=/usr/local/bin/urbit --loom 32 /path/to/pier  # 4GB
+ExecStart=/usr/local/bin/urbit --loom 32 /path/to/pier  # 4GB, use 33 for 8GB
 
 # Restart
 sudo systemctl daemon-reload

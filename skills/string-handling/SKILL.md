@@ -3,6 +3,8 @@ name: string-handling
 description: Master Hoon string types (cord @t, tape, term @tas, knot @ta), text manipulation, parsing, formatting, and conversions between types. Use when processing text, building UIs, parsing input, formatting output, or working with text data.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # String Handling Skill

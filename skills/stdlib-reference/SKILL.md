@@ -3,6 +3,8 @@ name: stdlib-reference
 description: Comprehensive reference for Hoon's standard library (hoon.hoon) organized by sections 1-5, covering list operations, set/map functions, text processing, math, parsing, and jetted functions. Use when looking for built-in functions, learning standard library capabilities, or optimizing common operations.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Standard Library Reference Skill

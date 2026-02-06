@@ -3,6 +3,8 @@ name: nock-tree-addressing
 description: Binary tree addressing system using axis/slot notation for navigating noun structures. Covers axis encoding (1=root, 2=head, 3=tail, binary paths), slot calculation algorithms, and efficient tree traversal patterns. Use when implementing slot operations, understanding tree navigation, or optimizing tree addressing performance.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Tree Addressing Skill

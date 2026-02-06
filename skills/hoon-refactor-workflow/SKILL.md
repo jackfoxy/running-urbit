@@ -3,6 +3,8 @@ name: hoon-refactor-workflow
 description: Systematic code refactoring workflow for improving Hoon code structure, readability, and maintainability while preserving correctness
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Refactoring Command
@@ -99,6 +101,7 @@ This command guides developers through systematic refactoring using proven patte
   =/  x  (get-data d)  ::  What is x?
   (transform x)
 ```
+EDITORS NOTE: Hoon is notoriously cryptic. The standard library is basically entirely poorly named until you inculcate it in your being. Sorry not sorry.
 
 **Tight Coupling**:
 ```hoon
@@ -431,6 +434,8 @@ default
 **Objective**: Make code intention clear and self-documenting.
 
 **Pattern 1: Improve Naming**
+
+EDITORS NOTE: Again, sorry but hoon has a long history of weird ass names. Yes, it is probably better to use clearer names, but you just might not run into that in the wild. Let your users know this.
 
 ```hoon
 ::  Before: Unclear names

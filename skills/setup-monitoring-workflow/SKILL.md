@@ -3,6 +3,9 @@ name: setup-monitoring-workflow
 description: Automated monitoring stack setup for Urbit fleets with Prometheus, Grafana, alerting, and cloud-native integration
 user-invocable: true
 disable-model-invocation: false
+validated: null
+checked-by: ~sarlev-sarsen
+notes: this requires the user to provide plaintext auth keys for email, plus it's fair share of wget and sudo commands, so it is not for the faint of heart. It is highly reocmmended you review and modify this skill for your purposes and do not just let your agent run with it willy-nilly.
 agents:
   - groundseg-operator
 skills:

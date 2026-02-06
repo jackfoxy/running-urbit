@@ -3,6 +3,9 @@ name: nock-performance-profiling
 description: Performance analysis techniques for Nock interpreters including CPU profiling, memory profiling, benchmarking methodologies, and bottleneck identification. Use when optimizing Nock implementations, measuring performance improvements, or diagnosing slow execution.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: would be good to get ~dozreg-toplud's review
 ---
 
 # Nock Performance Profiling

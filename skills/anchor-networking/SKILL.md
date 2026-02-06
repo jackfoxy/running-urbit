@@ -3,6 +3,8 @@ name: anchor-networking
 description: Self-hosted networking solution for Urbit ships providing StarTram-like functionality with reverse proxy, SSL/TLS termination, NAT traversal, and full infrastructure control. Use when self-hosting networking, configuring reverse proxies, setting up SSL/TLS, avoiding managed services, or implementing custom networking infrastructure.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Anchor Networking Skill
@@ -11,7 +13,7 @@ Self-hosted networking solution for Urbit ships providing StarTram-like function
 
 ## Overview
 
-Anchor is a self-hosted alternative to StarTram (Tlon's managed networking service). It provides reverse proxy, SSL/TLS termination, and NAT traversal for Urbit ships while maintaining complete infrastructure ownership.
+Anchor is a self-hosted alternative to StarTram (Native Planet's managed networking service). It provides reverse proxy, SSL/TLS termination, and NAT traversal for Urbit ships while maintaining complete infrastructure ownership.
 
 ## StarTram vs Anchor Comparison
 

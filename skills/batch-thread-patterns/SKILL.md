@@ -3,6 +3,8 @@ name: batch-thread-patterns
 description: Patterns for batch operations via conn.c threads including chunking strategies, poke batches, string accumulation, and sequential bind chains. Use when performing bulk operations on a ship, processing large datasets through threads, or building multi-step thread workflows.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Batch Thread Patterns for conn.c

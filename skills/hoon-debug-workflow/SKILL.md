@@ -3,6 +3,8 @@ name: hoon-debug-workflow
 description: Systematic debugging workflow for Hoon applications covering error diagnosis, trace analysis, state inspection, and crash recovery
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Debugging Command

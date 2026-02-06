@@ -3,17 +3,19 @@ name: nock-specification-reference
 description: Complete formal Nock specification including all reduction rules (0-12), pseudo-functions (slot, type test, increment, equality), crash conditions, and canonical semantics. Authoritative reference for implementation validation. Use when verifying interpreter correctness, resolving edge cases, or understanding formal behavior.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Specification Reference
 
-Complete authoritative specification for Nock 4K (frozen specification).
+Complete authoritative specification for Nock 4K ('Kelvin 4' specification).
 
 ## Official Specification
 
 **Source**: https://docs.urbit.org/nock/specification
 
-**Version**: Nock 4K (final, frozen forever)
+**Version**: Nock 4K (final, frozen forever at 0k, counting down)
 
 ## Complete Reduction Rules
 

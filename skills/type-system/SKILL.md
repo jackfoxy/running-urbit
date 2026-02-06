@@ -3,6 +3,8 @@ name: type-system
 description: Master Hoon's powerful structural type system including auras, molds, validation, type inference, generics, and variance. Use when designing types, debugging type errors, building robust type-safe code, or working with nest-fail issues and type casting.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Type System Skill

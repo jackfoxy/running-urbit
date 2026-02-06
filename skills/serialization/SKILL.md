@@ -3,6 +3,8 @@ name: serialization
 description: Master data serialization and deserialization in Hoon including JSON conversion, vases, jam/cue for nouns, and custom marks for type-safe data exchange. Use when handling external data, APIs, storage, inter-ship communication, or implementing data persistence.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Serialization Skill

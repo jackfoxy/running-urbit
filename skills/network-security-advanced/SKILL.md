@@ -3,6 +3,8 @@ name: network-security-advanced
 description: Advanced VPS security hardening for Urbit deployments including SSH hardening, firewall configuration, intrusion detection, fail2ban, DDoS protection, VPN setup, and zero-trust principles following 2025 security best practices. Use when hardening VPS security, implementing defense-in-depth, configuring firewalls, or meeting security compliance requirements.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Network Security Advanced Skill
@@ -13,11 +15,11 @@ Advanced VPS security hardening for Urbit ship deployments including SSH hardeni
 
 Advanced network security for Urbit VPS deployments implements defense-in-depth strategies, continuous monitoring, automated threat response, and compliance with 2025 security best practices.
 
-## SSH Hardening (2025 Best Practices)
+## SSH Hardening (2026 Best Practices)
 
 ### Change Default SSH Port
 
-**Security benefit**: Reduces automated attack surface by obscuring SSH access.
+**Security benefit**: Reduces automated attack surface by obscuring SSH access. Note that this is obscurity, rather than outright *security*. 
 
 ```bash
 # Edit SSH config
@@ -150,21 +152,104 @@ sudo ufw limit 2222/tcp comment 'SSH rate limit'
 
 **How it works**: Denies connections from IPs that attempt 6+ connections within 30 seconds.
 
-### Advanced UFW Rules
+## Docker & Firewall Interaction (Critical)
+
+### ⚠️ Important: Docker Bypasses UFW by Default
+
+Docker **manages iptables directly**. As a result:
+
+- Any port published with `docker run -p` or `ports:` in Compose
+- **is reachable from the public internet**
+- **even if UFW denies that port**
+
+This is expected Docker behavior and **not a UFW bug**.
+
+To restore a secure, predictable firewall model, you **must** use the `DOCKER-USER` chain.
+
+---
+
+## Correctly Restrict Docker-Exposed Ports (Recommended)
+
+Docker provides the `DOCKER-USER` chain explicitly for administrator firewall rules.  
+Rules in this chain are evaluated **before Docker allows traffic to containers**.
+
+We will:
+- allow established connections
+- explicitly allow only required ports
+- drop everything else
+
+This makes containers **private by default**.
+
+---
+
+### Secure Default Docker Firewall Rules (UFW-Compatible)
 
 ```bash
-# Block Docker bypass (important for GroundSeg)
+# Edit UFW after-rules
 sudo nano /etc/ufw/after.rules
+````
 
-# Add at end:
+Add **before the final `COMMIT`**:
+
+```ini
 *filter
 :DOCKER-USER - [0:0]
--A DOCKER-USER -j RETURN
-COMMIT
 
-# Reload UFW
+# Allow established / related connections
+-A DOCKER-USER -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Allow HTTP/HTTPS to containers (adjust as needed)
+-A DOCKER-USER -p tcp --dport 80 -j ACCEPT
+-A DOCKER-USER -p tcp --dport 443 -j ACCEPT
+
+# (Optional) Allow additional container ports explicitly
+# -A DOCKER-USER -p tcp --dport 8080 -j ACCEPT
+
+# Drop all other inbound traffic to containers
+-A DOCKER-USER -j DROP
+
+COMMIT
+```
+
+Reload UFW:
+
+```bash
 sudo ufw reload
 ```
+---
+
+## Adding a New Exposed Container Port
+
+To expose a new service safely:
+
+1. Add an explicit allow rule to `DOCKER-USER`
+2. Reload UFW
+3. Publish the Docker port
+
+Example (loopback-only exposure):
+
+```yaml
+ports:
+  - "127.0.0.1:3000:3000"
+```
+
+Example (explicit public exposure):
+
+```ini
+-A DOCKER-USER -p tcp --dport 3000 -j ACCEPT
+```
+
+---
+
+## Verification
+
+From a remote machine:
+
+```bash
+nmap -p- your.vps.ip
+```
+
+Correct configuration: Docker does **not** introduce new open ports unless explicitly allowed.
 
 ---
 
@@ -263,11 +348,11 @@ sudo fail2ban-client set sshd unbanip 203.0.113.50
 
 ---
 
-## Intrusion Detection (Suricata)
+## Intrusion Detection (Suricata) - ADVANCED
 
 ### Why Suricata?
 
-Suricata automatically identifies malicious traffic and sources, which can be added to firewall blocklists.
+Suricata automatically identifies malicious traffic and sources, which can be added to firewall blocklists. Optional, advanced, not recommended for most deployments.
 
 ### Installation
 
@@ -552,24 +637,6 @@ urbit ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart urbit-*, /usr/bin/systemctl
 # Isolate public-facing services from internal
 ```
 
-### 3. Multi-Factor Authentication (2FA)
-
-```bash
-# Install Google Authenticator
-sudo apt install libpam-google-authenticator -y
-
-# Configure for user
-google-authenticator
-
-# Enable in SSH
-sudo nano /etc/pam.d/sshd
-# Add: auth required pam_google_authenticator.so
-
-# /etc/ssh/sshd_config
-ChallengeResponseAuthentication yes
-AuthenticationMethods publickey,keyboard-interactive
-```
-
 ---
 
 ## Security Hardening Checklist
@@ -588,7 +655,6 @@ AuthenticationMethods publickey,keyboard-interactive
 - [ ] Lynis audit score ≥75
 - [ ] Log monitoring automated (logwatch)
 - [ ] IP whitelisting for SSH (if applicable)
-- [ ] 2FA enabled (optional, advanced)
 
 ---
 

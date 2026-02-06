@@ -3,6 +3,8 @@ name: nock-cores-arms-batteries
 description: Core structure pattern in Nock including batteries (code), payloads (data), arms (named formulas), and core invocation via Rule 9. Covers the fundamental code/data pattern used throughout Urbit for functions, objects, and modules. Use when understanding cores, implementing function calls, or building Hoon-compatible structures.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Cores, Arms, and Batteries Skill

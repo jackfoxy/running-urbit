@@ -3,7 +3,12 @@ name: debug-nock-execution-workflow
 description: Systematic debugging workflow for troubleshooting Nock formula execution from error analysis to resolution.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: Useful for learning, but not a production debugging tool
 ---
+
+THIS SKILL IS FOR DEBUNGGING NOCK EXECUTION WHEN RUNNING YOUR OWN BESPOKE NOCK INTERPRETER; IT IS NOT ADVISED TO USE IT WITH THE VERE REFERENCE IMPLEMENTATION.
 
 # Debug Nock Execution Command
 
@@ -199,4 +204,3 @@ def nock(subject, formula):
 - Nock Specification: https://docs.urbit.org/nock/specification
 - Common Errors: Urbit developer forums
 - Reference Implementation: https://github.com/urbit/urbit/tree/master/pkg/noun
-

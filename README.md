@@ -151,6 +151,22 @@ Skills are self-contained markdown -- no dependencies for knowledge, assistant, 
 - **urbit-conn**: `urbit` binary on PATH, `nc` (netcat) for socket communication
 - **urbit-terminal**: `screen` or `tmux` with a ship running in a named session
 
+## WARNINGS
+
+These skills have been reviewed for explicitly hostile prompt injections by @thelifeandtimes / ~sarlev-sarsen. 
+
+Review the frontmatter of any given skill for the state of review; YOU ARE RESPONSIBLE FOR ANY SKILLS (AKA PROBABLISTIC SOFTWARE) THAT YOU RUN ON YOUR SYSTEM. This review is done in good faith, BUT WE MAKE NO WARRANTY AS TO THE SAFETY OR FUNCTIONALITY OF THE SKILLS INCLUDED IN THIS REPOSITORY. This repo includes things like VPS hardening techniques, configuration files, `bash` scripts, `curl` commands, and more, which may or may not execute on your intended behaviors. 
+
+The frontmatter of each `SKILL.md` file includes the following parameters:
+```yaml
+---
+validated: safe || works
+checked-by: ~sarlev-sarsen
+---
+```
+
+In this context, `safe` means "free of obvious prompt injection attacks, including hidden html comments or obviously malicious scripts. `works` means the skill has been manually tested and confirmed to work.
+
 ## Contributing
 
 See [AGENTS.md](AGENTS.md) for a complete guide on creating new skills.

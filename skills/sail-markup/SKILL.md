@@ -3,6 +3,8 @@ name: sail-markup
 description: Master Sail, Hoon's embedded HTML templating language for building server-rendered web UIs with type-safe dynamic content generation, forms, styling, and Gall integration. Use when creating web interfaces, admin panels, server-side rendered pages in Gall agents, or building HTML responses.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Sail Markup Skill

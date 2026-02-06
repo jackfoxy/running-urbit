@@ -3,6 +3,8 @@ name: orchestrate-interpreter-workflow
 description: Intelligent orchestration for Nock interpreter development, optimization, and learning workflows. Dynamically coordinates education, implementation, profiling, and production-grade optimization.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Orchestrate Interpreter Command

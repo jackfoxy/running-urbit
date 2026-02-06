@@ -3,6 +3,8 @@ name: build-nock-interpreter-workflow
 description: Step-by-step workflow for building production-ready Nock interpreters from language selection through testing and optimization.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Build Nock Interpreter Command
@@ -204,7 +206,5 @@ After completing this workflow:
 ## Resources
 
 - Nock Specification: https://docs.urbit.org/nock/specification
-- Reference Implementations: https://docs.urbit.org/nock/implementations
+- Reference Implementation: https://github.com/urbit/vere
 - Decrement Exercise: https://docs.urbit.org/nock/decrement
-- Community Implementations: https://github.com/urbit (search "nock")
-

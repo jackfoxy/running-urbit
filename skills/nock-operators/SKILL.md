@@ -3,6 +3,8 @@ name: nock-operators
 description: Complete reference for Nock's 6 prefix operators (?, +, =, /, #, *) with formal semantics, implementation patterns, and edge cases. Covers type testing, increment, equality, tree addressing, editing, and evaluation. Use when implementing Nock operators, understanding operator semantics, or debugging operator behavior.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Operators Skill

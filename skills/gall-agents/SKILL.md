@@ -3,6 +3,8 @@ name: gall-agents
 description: Master Gall agent development including all 10 lifecycle arms, state management, subscriptions, HTTP endpoints, cards, and production patterns. Use when building Urbit applications, handling stateful logic, managing subscriptions, integrating with Arvo, or implementing production Gall agents.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Gall Agents Skill

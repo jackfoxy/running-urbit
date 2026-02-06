@@ -3,6 +3,9 @@ name: irregular-forms
 description: Master Hoon's irregular syntax - concise syntactic sugar for common patterns including cell construction, function calls, and list operations. Use when reading existing code, writing idiomatic Hoon, making code more readable, or understanding syntactic shortcuts.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+
 ---
 
 # Irregular Forms Skill

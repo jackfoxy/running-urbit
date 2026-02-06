@@ -3,6 +3,8 @@ name: hoon-expert-assistant
 description: Expert Hoon development assistant for implementing complex features, debugging issues, and writing production-ready Hoon code. Use when needing help with Hoon implementation, type errors, performance optimization, or understanding idiomatic patterns.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Expert Assistant

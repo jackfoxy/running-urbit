@@ -3,6 +3,9 @@ name: nock-instructions
 description: Complete reference for Nock's 13 reduction rules (0-12) with formal semantics, reduction examples, and implementation patterns. Covers slot, constant, evaluate, cell test, increment, equality, if-then-else, composition, push, call, and hints. Use when implementing the Nock evaluator, understanding reduction semantics, or debugging formula execution.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+
 ---
 
 # Nock Instructions Skill

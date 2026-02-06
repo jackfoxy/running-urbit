@@ -3,6 +3,8 @@ name: parsing
 description: Master parser combinators in Hoon including core parsers (ace, prn, dem, hex), combinators (star, plus, plug, pose, cook), building custom parsers, and parsing real-world formats. Use when processing user input, implementing DSLs, parsing structured data, or handling complex grammars.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Parsing Skill

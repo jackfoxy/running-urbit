@@ -3,6 +3,8 @@ name: advanced-security-patterns
 description: Master advanced security patterns for multi-tenant Urbit deployments including defense-in-depth, encryption at rest/transit, network segmentation, DDoS protection, and zero-trust architectures.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Advanced Security Patterns for Urbit Deployments
@@ -600,6 +602,8 @@ output "customer_ips" {
 
 **Use Case:** Protect Urbit pier data from physical disk theft or unauthorized access.
 
+**URBIT SPECIFIC WARNING:** Urbit ships are always-on personal servers, they do not operate while at rest, so LUKS pier encryption is ONLY TO BE USED IF YOU HAVE SHUT DOWN YOUR SHIP and are planning to put it into storage. DO NOT TRY TO ENCRYPT A RUNNING SHIP, IT MAY RESULT IN LOST OR CORRUPTED DATA OR THE NEED TO DO A "BREACH" AKA FACTORY RESET.
+
 **Implementation:**
 
 ```bash
@@ -1011,7 +1015,6 @@ resource "aws_wafv2_web_acl_association" "alb" {
 ### Multi-Tenant Security
 - [Kubernetes Multi-Tenancy Working Group](https://github.com/kubernetes-sigs/multi-tenancy)
 - [NIST Multi-Tenancy Architecture](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-146.pdf)
-- [Hierarchical Namespaces (HNC)](https://github.com/kubernetes-sigs/hierarchical-namespaces)
 
 ### Encryption
 - [LUKS Documentation](https://gitlab.com/cryptsetup/cryptsetup)

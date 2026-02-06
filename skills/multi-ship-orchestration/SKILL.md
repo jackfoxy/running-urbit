@@ -3,6 +3,9 @@ name: multi-ship-orchestration
 description: Managing fleets of Urbit ships with GroundSeg including resource planning, lifecycle management, fleet sizing, monitoring, and operational workflows for coordinating multiple ships on shared infrastructure. Use when managing ship fleets, planning multi-ship deployments, allocating resources, or operating GroundSeg orchestration environments.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: would benefit from review by ~sitful-hatred
 ---
 
 # Multi-Ship Orchestration Skill
@@ -219,29 +222,7 @@ done
 
 ### Backup Orchestration
 
-```bash
-# Fleet backup script
-#!/bin/bash
-BACKUP_DIR="/backups/fleet-$(date +%Y%m%d)"
-mkdir -p $BACKUP_DIR
-
-# Stop all ships
-docker-compose down
-
-# Wait for complete shutdown
-sleep 60
-
-# Backup each pier
-for pier in ./piers/*; do
-  tar czf "$BACKUP_DIR/$(basename $pier).tar.gz" "$pier"
-done
-
-# Restart ships
-docker-compose up -d
-
-# Upload to offsite (S3, etc.)
-aws s3 sync $BACKUP_DIR s3://urbit-fleet-backups/$(date +%Y%m%d)/
-```
+For encrypted remote backups of Tlon Messenger state, it is recommended you user Native Planet's Startram service
 
 ## Performance Optimization
 

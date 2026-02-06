@@ -3,6 +3,8 @@ name: hoon-style-guide
 description: Comprehensive style guide for writing clean, idiomatic, and maintainable Hoon code following community conventions including naming, formatting, documentation, and idiomatic patterns. Use when writing new code, reviewing code, establishing team standards, or ensuring code quality.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Style Guide Skill

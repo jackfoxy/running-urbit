@@ -3,6 +3,8 @@ name: managed-hosting-comparison
 description: Detailed comparison of Urbit managed hosting providers including Tlon, Red Horizon, and self-hosting options with 2025 pricing, features, SLAs, migration procedures, and decision frameworks. Use when evaluating hosting options, comparing providers, planning migrations, or making build-vs-buy decisions.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Managed Hosting Comparison Skill
@@ -30,8 +32,8 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 ### Red Horizon
 **Pros**: Professional SLA, crypto-native, security-focused, backup included, FREE hosting
 **Cons**: Less customization than VPS
-**Ideal**: Businesses, uptime-critical apps, professional support needs
-**Pricing**: FREE (users provide valuable insights for long-term vision of scalable Urbit hosting for millions)
+**Ideal**: Users who want to have a hosted urbit with less of a focus on Tlon Messenger use cases
+**Pricing**: Currently not taking on new users.
 
 ### UrbitHost (Absorbed into Tlon Hosting)
 **Note**: UrbitHost is no longer an independent provider. Its hosting capabilities were absorbed into Tlon Hosting. Users previously on UrbitHost should refer to the Tlon Hosting section above.
@@ -63,7 +65,7 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 
 ## Feature Comparison
 
-**Backup/Recovery**:
+**Pier & Private Key Availability*:
 - Tlon: Manual export request
 - Red Horizon: Automated, included
 - Self-Hosting: User-managed
@@ -83,9 +85,9 @@ Detailed comparison of Urbit managed hosting providers with pricing, features, S
 
 ## Pricing Summary (Annual)
 
-- **Tlon**: $0/year (free tier) or ~$240/year (paid plan at ~$20/mo)
-- **Red Horizon**: $0/year (FREE)
-- **Self-Hosting**: $300-800 (Year 1 hardware) + $60-120/year (StarTram)
+- **Tlon**: $0/year 
+- **Red Horizon**: $0/year 
+- **Self-Hosting**: $300-800 (Year 1 hardware) + $60-120/year (StarTram, Optional)
 - **VPS (Hetzner)**: $78/year
 - **VPS (DigitalOcean)**: $288/year
 

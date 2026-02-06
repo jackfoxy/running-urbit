@@ -3,6 +3,9 @@ name: orchestrate-deployment-workflow
 description: Intelligent multi-agent orchestration for complex Urbit deployments. Dynamically selects deployment paths, coordinates specialists, and handles full-stack workflows (dev > staging > prod) with cross-plugin integration.
 user-invocable: true
 disable-model-invocation: false
+validated: null
+checked-by: ~sarlev-sarsen
+notes: This orchestrator isn't likely to be directly harmful, but it is very general puporse; use carefully. Some downstream skills have been stripped due to potential security risks. This skill needs updating given that reality; see referenced skills to infer necessary updates.
 ---
 
 # Orchestrate Deployment Command

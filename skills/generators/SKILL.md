@@ -3,6 +3,8 @@ name: generators
 description: Master Hoon generators including naked generators (simple values), %say generators (with arguments), and %ask generators (interactive prompts). Use when creating command-line tools, scripts, one-off computations, testing utilities, or accessing system state via scries.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Generators Skill

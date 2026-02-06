@@ -3,6 +3,8 @@ name: performance-optimization
 description: System-level and Urbit-specific performance tuning including I/O scheduler optimization, kernel parameters, disk performance, memory management, CPU pinning, and ship state optimization. Use when optimizing ship performance, tuning system parameters, eliminating bottlenecks, or improving responsiveness.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Performance Optimization Skill
@@ -136,6 +138,7 @@ chmod +x /usr/local/bin/urbit-meld.sh
 
 ### Increasing Loom (If System Has RAM)
 
+Loom is the available space for storing your Urbit's state. While Urbit OS (aka 'Arvo') has no conception of the difference between memory and storage, the runtime handles that abstraction on the host system (generally UNIX). The loom will be most performant if the system has available RAM, but Vere's 'demand paging' feature makes it possible to future abstract the distinction between RAM and Disk, intelligently loading 'pages' in and out of memory depending on what is necessary.
 ```bash
 # For ships approaching 2GB state:
 # Stop ship
@@ -152,7 +155,7 @@ sudo systemctl daemon-reload
 systemctl start urbit-ship
 ```
 
-**IMPORTANT**: Must use same `--loom` value on every boot
+**IMPORTANT**: Must use same or larger `--loom` value on boot, unless `meld` can get your loom back down below the target value
 
 ## CPU Optimization
 

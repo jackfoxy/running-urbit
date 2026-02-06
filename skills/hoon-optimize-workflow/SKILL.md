@@ -3,6 +3,8 @@ name: hoon-optimize-workflow
 description: Systematic performance optimization workflow for Hoon code covering algorithmic complexity, data structures, caching, and runtime profiling
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon Performance Optimization Command

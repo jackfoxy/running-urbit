@@ -3,6 +3,9 @@ name: kubernetes-urbit
 description: Production Kubernetes deployment for Urbit ships using StatefulSets, persistent volumes, LoadBalancers, and service mesh integration with automatic failover and centralized management for enterprise fleets (25+ ships). Use when deploying Kubernetes fleets, architecting enterprise infrastructure, implementing high availability, or managing mission-critical Urbit deployments.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: This is unlikely to actually work for kubernetes deployment, but it is a reasonable starting point. Further research and implementation may be required.
 ---
 
 # Kubernetes Urbit Deployment Skill

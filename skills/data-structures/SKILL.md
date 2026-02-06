@@ -3,6 +3,8 @@ name: data-structures
 description: Master Hoon's built-in data structures including lists, sets, maps, mops (ordered maps), jars, jugs, and trees with their operations and performance characteristics. Use when choosing data structures, optimizing algorithms, building complex applications, or understanding standard library collections.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Data Structures Skill

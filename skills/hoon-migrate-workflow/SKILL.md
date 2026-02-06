@@ -3,6 +3,8 @@ name: hoon-migrate-workflow
 description: Safe state migration workflow for Gall agents covering versioning, backwards compatibility, and zero-downtime upgrades
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Hoon State Migration Command

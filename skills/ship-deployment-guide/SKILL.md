@@ -3,6 +3,8 @@ name: ship-deployment-guide
 description: Step-by-step procedures for deploying Urbit planets, comets, and fake ships on bare-metal Ubuntu/Debian systems with system preparation, binary installation, network configuration, systemd integration, and production validation. Use when deploying ships, booting from keyfiles, configuring networking, or setting up production environments.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Ship Deployment Guide Skill
@@ -116,14 +118,14 @@ sudo mv urbit /usr/local/bin/
 
 # Verify installation
 urbit --version
-# Should output: Urbit vere v3.2 (or later)
+# Should output: Urbit vere v4.2 (or later)
 ```
 
 **Alternative: Specific version**:
 ```bash
 # Download specific Vere version (if needed for compatibility)
-curl -L https://urbit.org/install/linux-x86_64/v3.2/urbit-v3.2-linux-x86_64.tgz | tar xzk
-sudo mv urbit-v3.2-linux-x86_64/urbit /usr/local/bin/urbit
+curl -L https://urbit.org/install/linux-x86_64/v4.2/urbit-v4.2-linux-x86_64.tgz | tar xzk
+sudo mv urbit-v4.2-linux-x86_64/urbit /usr/local/bin/urbit
 ```
 
 ### 2.2 Binary Verification
@@ -215,7 +217,7 @@ urbit -w sampel-palnet -k sampel-palnet-1.key
 **Step 3: Initial sync and boot**
 ```
 # Urbit will output:
-urbit v3.2
+urbit v4.2
 boot: home is /home/urbit/sampel-palnet
 loom: mapped 2048MB
 lite: arvo formula 123456789
@@ -224,7 +226,7 @@ boot: protected lick
 pier: (12): live
 pier: (13): syncing to sponsor ~sampel...
 ...
-# This takes 5-30 minutes depending on network and sponsor
+# This takes 3-5 minutes depending on network and sponsor
 ...
 dojo> # You're in! Ship booted successfully
 ```
@@ -340,7 +342,7 @@ urbit -c mycomet
 **Step 2: Initial network sync**
 ```
 # Urbit will output:
-urbit v3.2
+urbit v4.2
 boot: home is /home/urbit/mycomet
 loom: mapped 2048MB
 boot: new comet ~sampel-sampel-sampel-sampel (example)
@@ -353,7 +355,7 @@ dojo> # Comet booted successfully
 ```
 
 **Identity generated**:
-- Comet names are long: `~sampel-sampel-sampel-sampel` (8 syllables)
+- Comet names are long: `~hoslyn-pidnux-halsym-haldun--rivbep-dormec-tocler-binzod` (16 syllables)
 - Identity is deterministic from pier (cannot recover if pier lost)
 
 **Step 3: Verify boot**
@@ -432,15 +434,18 @@ urbit -F zod
 # zod : ship name (patp without ~)
 
 # Can use any identity:
-urbit -F sampel-palnet  # Fake planet
-urbit -F litzod         # Fake star
-urbit -F marzod         # Fake galaxy
+urbit -F sampel-palnet                  # Fake planet
+urbit -F litzod                         # Fake star
+urbit -F mister-botter-sampel-palnet    # Fake moon
+
+# if booting star/planet/moons, local networking for a fakenet requires parent sponsors to be live on your local network
+# e.g. for ~marzod and ~tocwex fakeships to communicate, fake ~zod and ~wex galaxies must be running
 ```
 
 **Step 2: Quick boot**
 ```
 # Urbit will output:
-urbit v3.2
+urbit v4.2
 boot: home is /home/urbit/zod
 loom: mapped 2048MB
 lite: arvo formula 123456789
@@ -812,7 +817,7 @@ uptime
 # Quick fix (in dojo):
 |pack  # Defragmentation
 
-# Thorough fix (requires 8GB RAM):
+# Thorough fix (requires more RAM):
 |meld  # Deduplication
 
 # Or increase loom (restart required):

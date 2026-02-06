@@ -3,6 +3,8 @@ name: rune-reference
 description: Complete reference guide for all ~90+ Hoon runes (operators) across 13 families, their syntax forms (tall/wide/irregular), usage patterns, and practical examples. Use when writing Hoon code, understanding existing code, choosing the right rune for a task, or debugging rune-related errors.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Rune Reference Skill

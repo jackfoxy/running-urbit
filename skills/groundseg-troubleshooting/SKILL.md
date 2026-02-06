@@ -3,6 +3,9 @@ name: groundseg-troubleshooting
 description: Systematic diagnostic procedures for GroundSeg container platform issues including Docker configuration problems, UI accessibility, networking failures, ship lifecycle issues, and multi-ship coordination problems. Use when diagnosing GroundSeg issues, resolving Docker problems, debugging container networking, or troubleshooting ship management failures.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
+notes: Would be good to have ~sitful-hatred review
 ---
 
 # GroundSeg Troubleshooting Skill
@@ -107,7 +110,7 @@ mem_limit: 6g  # Increase from 4g
 
 ### StarTram Not Working
 
-**Symptoms**: Ships not accessible via *.arvo.network domain
+**Symptoms**: Ships not accessible via *startram.io domain
 
 **Diagnostics**:
 ```bash
@@ -118,7 +121,7 @@ mem_limit: 6g  # Increase from 4g
 docker logs ship-name | grep -i startram
 
 # Test DNS resolution
-nslookup ship-name.arvo.network
+nslookup ship-name.startram.io
 ```
 
 **Resolutions**:
@@ -322,16 +325,7 @@ docker exec -it ship-name /bin/sh -c "urbit-worker dojo"
 
 ### Pier Corruption in Container
 
-```bash
-# Check container filesystem
-docker exec ship-name ls -la /urbit
-
-# Restore from backup
-docker-compose stop ship-name
-sudo mv piers/ship-name piers/ship-name.corrupted
-sudo tar xzf ship-name-backup.tar.gz -C piers/
-docker-compose start ship-name
-```
+Submit logs via the Groundseg GUI and then contact Native Planet for Support, support@nativeplanet.io.
 
 ### Volume Issues
 
@@ -358,31 +352,6 @@ docker volume prune
 8. **Monitor disk space**: Docker images consume significant space
 9. **Test locally first**: Use fake ships to test configurations
 10. **Keep logs**: `docker-compose logs > debug.log` for support
-
-## Emergency Procedures
-
-### Complete GroundSeg Reset (Last Resort)
-
-```bash
-# WARNING: This stops all ships and removes containers
-# Backup first!
-tar czf complete-backup-$(date +%Y%m%d).tar.gz piers/ .env docker-compose.yml
-
-# Stop all containers
-docker-compose down
-
-# Remove volumes (optional, dangerous)
-# docker volume prune
-
-# Remove all containers and images
-docker system prune -a
-
-# Reinstall GroundSeg
-sudo wget -O - get.groundseg.app|bash
-
-# Restore piers
-# Extract from backup
-```
 
 ## Reference
 

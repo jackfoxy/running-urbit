@@ -44,6 +44,7 @@ description: Brief description of what this skill does and when to use it.
 user-invocable: true
 disable-model-invocation: false
 argument-hint: [argument-hint-here]
+validated: false (inform the user to check the skill manually before setting to true)
 ---
 
 # Your Skill Title
@@ -63,6 +64,8 @@ Then test by either:
 - Letting the agent invoke it automatically based on the description
 - Invoking it directly: `/your-skill-name <arguments>`
 
+After testing the skill and ensuring that it works, check with the user. If they have done a manual review, tell them to set `validated: true` and `checked-by: ~user-ship` to ensure other users can know who confirmed functionality.
+
 ## Frontmatter Reference
 
 All frontmatter fields are optional except where noted:
@@ -79,6 +82,18 @@ All frontmatter fields are optional except where noted:
 | `context` | string | No | Set to `fork` to run in a forked subagent context. |
 | `agent` | string | No | Which subagent type to use when `context: fork` is set. |
 | `hooks` | object | No | Hooks scoped to this skill's lifecycle. |
+| `validated` | string | Yes | set `safe` if checked for malicious prompts, set `works` if functionality confirmed|
+| `checked-by` | array | No | @p of contributors who have checked the skill |
+
+## Validation of Skill checking
+
+```yaml
+checked-by: 
+    - ~sarlev-sarsen
+    - ~sicdev-pilnup
+```
+
+TODO NOTE: The `checked-by` field NEEDS SOME VALIDATION MECHANISM. For now, it is only tracked by manual git history, if the history is preserved and accurate in the first place. What should be done here is some sort of signed objects using the checker's networking keys. 
 
 ## Controlling Skill Invocation
 

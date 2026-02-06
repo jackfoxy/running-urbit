@@ -3,6 +3,8 @@ name: nock-jetting-optimization
 description: Jet acceleration system for replacing Nock formulas with native code implementations. Covers hint processing (rules 10-11), cold/hot/warm state management, jet registration, validation strategies, and common jet patterns. Use when implementing performance-critical jets or building production Nock runtimes.
 user-invocable: true
 disable-model-invocation: false
+validated: safe
+checked-by: ~sarlev-sarsen
 ---
 
 # Nock Jetting Optimization
