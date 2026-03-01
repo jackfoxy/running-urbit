@@ -57,6 +57,53 @@ Hoon provides functional data structures built on the noun foundation. This skil
 ~(tap by (my ~[[%a 1]]))   ::  Map → list of pairs
 ```
 
+### Accessing i. and t. — CRITICAL RULE
+
+`(list a)` is the fork `$@(~ [i=a t=(list a)])`. The faces `i` and `t` only
+exist in the non-null branch. **The only rune that narrows a list to its
+non-null variant and makes `i.` and `t.` accessible is `?~`.**
+
+`lent` comparisons, `?=` assertions, and `?.` guards on `lent` do NOT narrow
+the type. Using `i.` after any of these will produce a `find-fork` error.
+
+```hoon
+::  WRONG — lent does not narrow the type; find-fork on i.xs
+?.  =(1 (lent xs))
+  !!
+=/  head  i.xs       ::  find-fork!
+
+::  CORRECT — ?~ narrows to non-null; i. and t. are now valid
+?~  xs
+  ~|("empty" !!)
+=/  head  i.xs       ::  ok
+
+::  Exactly-one check: ?~ first, then check t. is ~
+?~  xs
+  ~|("empty" !!)
+?.  =(~ t.xs)
+  ~|("more than one" !!)
+=/  only  i.xs       ::  ok — xs has exactly one element
+```
+
+#### Deep wings and find-fork
+
+Even after `?~` narrows a list, accessing a face inside `i.` via a deep wing
+path (e.g. `data.i.some-list`) can still produce `find-fork` when the
+compiler encounters multiple `data` faces in the subject (e.g. if both
+`indexed-row` and `joined-row` in scope both have a `data` field).
+
+**Fix**: bind `i.xs` to an explicitly-typed intermediate first, then access
+the face on that binding:
+
+```hoon
+::  WRONG — find-fork if 'data' appears in multiple types in scope
+=/  val  (~(got by data.i.indexed-rows.st) col-name)
+
+::  CORRECT — bind to typed intermediate; data.irow is unambiguous
+=/  irow=indexed-row  i.indexed-rows.st
+=/  val  (~(got by data.irow) col-name)
+```
+
 ### Core Operations
 
 ```hoon
