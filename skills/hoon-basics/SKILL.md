@@ -184,6 +184,21 @@ This applies to any list-typed expression, including faces on cores:
 7. **No mutation**: All data structures are immutable
 8. **Number formatting**: Numbers over 999 MUST use dots every 3 digits: `1.000` not `1000`, `844.494` not `844494`. Omitting dots causes a parser error (e.g. `{1 52}`) with no hint about number formatting. This is a common source of hard-to-diagnose errors.
 9. **Backtick escaping from Python**: When generating Hoon from Python, backticks (`` ` ``) conflict with string formatting. Use `\x60` as the Python-safe way to emit a backtick character in generated Hoon code. In bash, single-quoted strings (`'...'`) pass backticks through safely with no escaping needed.
+10. **Wing resolution on expressions: use `:` not `.`**: The dot `.` syntax (`face.subject-path`) resolves wings by walking the **subject tree by face name**. It does **not** work on arbitrary expression results. To extract a wing from the result of an expression, use the `wing:expression` (colon) form:
+
+```hoon
+::  WRONG — syntax error: +. cannot follow an arbitrary expression
++.;;(some-type value)
+
+::  CORRECT — evaluate the cast, then take the tail
++:;;(some-type value)
+
+::  Same distinction for named faces
+dime.;;(literal-value:ast datum)   ::  WRONG
+dime:;;(literal-value:ast datum)   ::  CORRECT
+```
+
+This applies any time you want to access a wing (`+`, `-`, `p`, `q`, a face name, etc.) from the result of a gate call, cast, or other expression — always use `:` in that position.
 
 ## Fast Lookups
 

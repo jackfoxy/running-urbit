@@ -9,7 +9,7 @@ checked-by: ~sarlev-sarsen
 
 # Hoon Style Guide Skill
 
-Comprehensive style guide for writing clean, idiomatic, and maintainable Hoon code following community conventions. Use when writing new code, reviewing code, or establishing team standards.
+Comprehensive style guide for writing clean, idiomatic, and maintainable Hoon code following community conventions. Use when writing new code or reviewing code.
 
 ## Overview
 
@@ -26,7 +26,11 @@ This guide covers naming conventions, code organization, formatting, documentati
 
 ## 1. Naming Conventions
 
-### Arm Names (`++`)
+### faces
+
+1. arm names `++`
+2. type names `+$`
+3. named nouns '=/'
 
 **Use lowercase with hyphens**:
 ```hoon
@@ -34,94 +38,47 @@ This guide covers naming conventions, code organization, formatting, documentati
 ++  parse-input
 ++  validate-user
 ++  get-current-time
++$  user-profile
+=/  user-id  42
 
-::  ✗ Bad
+::  ✗ Bad, will not build
 ++  parseInput      :: camelCase
 ++  ParseInput      :: PascalCase
 ++  parse_input     :: snake_case
-```
-
-### Type Names (`+$`)
-
-**Use lowercase with hyphens**:
-```hoon
-::  ✓ Good
-+$  user-profile
-+$  api-request
-+$  connection-state
-
-::  ✗ Bad
 +$  UserProfile    :: PascalCase
 +$  user_profile   :: snake_case
-```
-
-### Variable Names
-
-**Use lowercase with hyphens**:
-```hoon
-::  ✓ Good
-=/  user-id  42
-=/  max-count  100
-=/  error-message  'Failed'
-
-::  ✗ Bad
 =/  userId  42
-=/  MAX_COUNT  100
-```
-
-### Face Names in Structures
-
-**Short, descriptive names**:
-```hoon
-::  ✓ Good
-+$  user
-  $:  id=@ud
-      name=@t
-      email=@t
-      created-at=@da
-  ==
-
-::  ✗ Bad: Too verbose
-+$  user
-  $:  user-id=@ud
-      user-name=@t
-      user-email=@t
-  ==
-```
-
-### Term Constants
-
-**Use lowercase with hyphens after %**:
-```hoon
-::  ✓ Good
-%connected
-%user-logged-in
-%api-error
-
-::  ✗ Bad
-%Connected
-%USER_LOGGED_IN
-```
-
-### Abbreviations
-
-**Avoid unless very common**:
-```hoon
-::  ✓ Good
-++  http-request
-++  json-parser
-++  url-decoder
-
-::  ✓ Acceptable (very common)
-++  xml-parse
-++  id-generator
-
-::  ✗ Bad (unclear)
-++  req-hndlr
-++  usr-mgmt
 ```
 
 ## 2. Code Formatting
+
+### Line Length
+
+**maximum of 80 characters**:
+```hoon
+::  ✓ Good: Wrap long lines
+=/  very-long-computation
+  %+  combine-results  %+  first-complex-operation  input-data
+                                                    threshold
+                       default-value
+
+::  ✗ Bad: Too long
+=/  very-long-computation  (combine-results (first-complex-operation input-data threshold) default-value)
+```
+
+**when wide form exceeds 80 characters**
+```hoon
+::  ✗ Bad: wide format too long
+~|("resolve selected-cte-column: no rows in cte {<cte.selected>}" !!) 
+
+::  ✓ Good: use tall format and align rune parameters
+~|  "resolve selected-cte-column: no rows in cte {<cte.selected>}"
+    !!
+
+~|  "resolve selected-cte-column: no rows in cte ".
+    "and tape must be broken up into multiple lines {<cte.selected>}"
+    !!
+```
 
 ### Indentation
 
@@ -136,6 +93,16 @@ This guide covers naming conventions, code organization, formatting, documentati
     0
   u.processed
 --
+```
+
+### Wide Form Usage
+
+**Use for simple expressions**:
+```hoon
+::  ✓ Good: Simple operations
+=/  sum  (add a b)
+=/  doubled  (mul n 2)
+?:(=(x 0) 'zero' 'non-zero')
 ```
 
 ### Tall Form Alignment
@@ -158,58 +125,19 @@ true-branch
 false-branch
 ```
 
-### Wide Form Usage
+**bracket [] and paren () format**
 
-**Use for simple expressions**:
+1. [] for tuple definition only works for single-line wide format
+2. () for arm dispatch only works for single-line wide format
+3. () format does not support runes inside
+
 ```hoon
-::  ✓ Good: Simple operations
-=/  sum  (add a b)
-=/  doubled  (mul n 2)
-?:(=(x 0) 'zero' 'non-zero')
+::  ✓ Good: all on one line
+=/  foo  [(heading i.selected name.i.selected) 42]
 
-::  ✓ Good: Complex logic uses tall
-?:  %+  gte
-      (lent input)
-    max-length
-  (handle-long input)
-(process-normal input)
-```
-
-### Blank Lines
-
-**Separate logical sections**:
-```hoon
-|%
-++  process-request
-  |=  request=http-request
-  ^-  http-response
-  ::  Validate input
-  =/  validated  (validate request)
-  ?~  validated
-    (error-response 'Invalid request')
-
-  ::  Process data
-  =/  result  (process u.validated)
-
-  ::  Build response
-  (success-response result)
---
-```
-
-### Line Length
-
-**Aim for maximum of 80 characters**:
-```hoon
-::  ✓ Good: Wrap long lines
-=/  very-long-computation
-  %+  combine-results
-    %+  first-complex-operation
-      input-data
-    threshold
-  default-value
-
-::  ✗ Bad: Too long
-=/  very-long-computation  (combine-results (first-complex-operation input-data threshold) default-value)
+::  ✗ Bad: does not build
+=/  foo  [(heading i.selected name.i.selected)
+            (%-  selected-cte-dime  [i.selected named-ctes])]
 ```
 
 ## 3. Comments and Documentation
@@ -234,17 +162,17 @@ false-branch
 
 ### Arm Documentation
 
-**Describe purpose, parameters, and return value**:
+1. one empty comment line before ++ arm
+2. arm description comments immediately follow ++ indented by two spaces
+
+**Describe purpose**:
 ```hoon
-::  Parse an HTTP request into structured data
-::
-::  Arguments:
-::    raw-request: Raw HTTP request as cord
-::
-::  Returns:
-::    unit of parsed request, ~ if invalid
 ::
 ++  parse-http-request
+  ::  Parse an HTTP request into structured data
+  ::
+  ::  Returns:
+  ::    unit of parsed request, ~ if invalid
   |=  raw-request=@t
   ^-  (unit http-request)
   ...
@@ -261,36 +189,6 @@ false-branch
 ::  ✗ Bad: States the obvious
 =/  timeout  ~s30
 ::  Set timeout to 30 seconds
-```
-
-**Use `::` for documentation, `::  Note:` for warnings**:
-```hoon
-::  Calculate user reputation score
-::  Note: This is an expensive operation, use sparingly
-++  calculate-reputation
-  |=  user-id=@ud
-  ...
-```
-
-### Section Comments
-
-**Organize related code**:
-```hoon
-|%
-::  +|  Validation Functions
-::
-++  validate-email
-  ...
-++  validate-password
-  ...
-
-::  +|  Database Operations
-::
-++  save-user
-  ...
-++  load-user
-  ...
---
 ```
 
 ## 4. Code Organization
@@ -322,24 +220,6 @@ false-branch
 ++  validate-name
   ...
 ++  generate-id
-  ...
---
-```
-
-### Arm Ordering
-
-**Public before private, simple before complex**:
-```hoon
-|%
-::  Simple getters
-++  get-id
-  |=(user=user id.user)
-++  get-name
-  |=(user=user name.user)
-
-::  Complex operations
-++  create-user
-  |=  [name=@t email=@t]
   ...
 --
 ```
@@ -407,28 +287,17 @@ false-branch
   ...
 ```
 
-### Pattern 4: Error Handling
+### Pattern 4: Crash Handling
+
+1. use tracing printf hint to guard potential crashes with meaningful messages
 
 ```hoon
-::  ✓ Good: Return result type
-+$  result
-  $%  [%ok value=@t]
-      [%err message=@t]
-  ==
+::  ✗ Bad: known danger of crash
+(potential-crash param)
 
-++  parse-number
-  |=  input=@t
-  ^-  result
-  =/  parsed  (rush input dem)
-  ?~  parsed
-    [%err 'Invalid number']
-  [%ok (scot %ud u.parsed)]
-
-::  ✗ Bad: Crash on error
-++  parse-number-unsafe
-  |=  input=@t
-  (rash input dem)  ::  Crashes if invalid
-```
+::  ✓ Good: guard with message including data
+~|  "failed at potential crash site {<param>}"
+    (potential-crash param)
 
 ### Pattern 5: Default Values
 
@@ -467,74 +336,7 @@ false-branch
   'ok'
 ```
 
-### Anti-Pattern 2: Deep Nesting
-
-```hoon
-::  ✗ Bad: Deep nesting
-++  process
-  |=  data=@t
-  =/  validated  (validate data)
-  ?~  validated
-    ~
-  =/  parsed  (parse u.validated)
-  ?~  parsed
-    ~
-  =/  processed  (process-data u.parsed)
-  ?~  processed
-    ~
-  `u.processed
-
-::  ✓ Good: Early returns
-++  process
-  |=  data=@t
-  =/  validated  (validate data)
-  ?~  validated  ~
-  =/  parsed  (parse u.validated)
-  ?~  parsed  ~
-  =/  processed  (process-data u.parsed)
-  ?~  processed  ~
-  `u.processed
-```
-
-### Anti-Pattern 3: Overly Generic Names
-
-```hoon
-::  ✗ Bad
-++  process
-  |=  data=@t
-  =/  result  (do-stuff data)
-  result
-
-::  ✓ Good
-++  parse-json
-  |=  json-text=@t
-  =/  parsed  (parse json-text)
-  parsed
-```
-
-### Anti-Pattern 4: Long Functions
-
-```hoon
-::  ✗ Bad: 100+ line function
-++  handle-request
-  |=  request=http-request
-  ::  Validate (20 lines)
-  ::  Parse (30 lines)
-  ::  Process (40 lines)
-  ::  Format (20 lines)
-  ...
-
-::  ✓ Good: Decomposed
-++  handle-request
-  |=  request=http-request
-  =/  validated  (validate-request request)
-  ?~  validated  (error-response 'Invalid')
-  =/  parsed  (parse-request u.validated)
-  =/  result  (process-request parsed)
-  (format-response result)
-```
-
-### Anti-Pattern 5: Inconsistent Naming
+### Anti-Pattern 2: Inconsistent Naming
 
 ```hoon
 ::  ✗ Bad: Mixed conventions
@@ -548,6 +350,36 @@ false-branch
 ++  delete-user
 ```
 
+### Anti-Pattern 2: fish-loop
+
+1. ?= pattern matching rune causes fish-loop on recursive mold types
+2. avoid ?= on tree, list, map
+3. when matching union types match on non-recursive type first
+
+:  ✗ Bad: will not build with fish-loop
++$  predicate     (tree predicate-component)
++$  predicate-or-dime
+  $:  %predicate-or-dime
+    when=$%(predicate dime)
+    then=dime
+    ==
+?:  ?=(predicate when-cwt)
+  do-foo
+do-kung-foo
+
+::  ✓ Good: Consistent
++$  predicate     (tree predicate-component)
++$  predicate-or-dime
+  $:  %predicate-or-dime
+    when=$%(predicate dime)
+    then=dime
+    ==
++$
+?:  ?=(dime when-cwt)
+  do-kung-foo
+do-foo
+```
+
 ## 7. Testing and Examples
 
 ### Provide Examples
@@ -555,12 +387,11 @@ false-branch
 ```hoon
 ::  ✓ Good: Include usage examples
 ::
-::  Example:
-::    =/  user  (create-user 'Alice' 'alice@example.com')
-::    =/  saved  (save-user user)
-::    (get-user id.user)
-::
 ++  create-user
+  ::  Example:
+  ::    =/  user  (create-user 'Alice' 'alice@example.com')
+  ::    =/  saved  (save-user user)
+  ::    (get-user id.user)
   |=  [name=@t email=@t]
   ...
 ```
@@ -608,30 +439,7 @@ false-branch
 [(mul i.items 2) $(items t.items)]
 ```
 
-## 9. Git and Version Control
-
-### Commit Messages
-
-```
-feat: add user authentication system
-
-Implements:
-- Password hashing with bcrypt
-- Session management
-- Role-based access control
-```
-
-### File Headers with Authorship
-
-```hoon
-::  User Authentication Library
-::  Author: ~sampel-palnet
-::  Created: 2024-01-15
-::  License: MIT
-::
-```
-
-## 10. Hoon-Specific Conventions
+## 9. Hoon-Specific Conventions
 
 ### Face Punning
 
@@ -673,20 +481,3 @@ name=value
 c
 ```
 
-## Resources
-
-- [Official Style Guide](https://docs.urbit.org/language/hoon/style) - Urbit style guide
-- [Community Examples](https://github.com/urbit/urbit/tree/master/pkg) - Real-world code
-- [Code Review Guide](https://developers.urbit.org/guides/additional/code-review) - Review checklist
-
-## Summary
-
-Hoon style guide emphasizes:
-1. **Kebab-case naming** for all identifiers
-2. **Clear documentation** with examples
-3. **Logical organization** from general to specific
-4. **Idiomatic patterns** for common tasks
-5. **Performance awareness** in complex code
-6. **Consistency** across the codebase
-
-Following these conventions makes code readable, maintainable, and idiomatic within the Urbit ecosystem.
