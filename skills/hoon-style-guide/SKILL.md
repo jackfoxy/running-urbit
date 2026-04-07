@@ -75,6 +75,7 @@ This guide covers naming conventions, code organization, formatting, documentati
 ~|  "resolve selected-cte-column: no rows in cte {<cte.selected>}"
     !!
 
+::  ✓ Good: continue message on next ling by adding dot after closing quote
 ~|  "resolve selected-cte-column: no rows in cte ".
     "and tape must be broken up into multiple lines {<cte.selected>}"
     !!
@@ -103,6 +104,13 @@ This guide covers naming conventions, code organization, formatting, documentati
 =/  sum  (add a b)
 =/  doubled  (mul n 2)
 ?:(=(x 0) 'zero' 'non-zero')
+
+::  ✓ Good
+=/  target-val  (apply-scalar data-row +.target-ps)
+
+::  ✗ Bad
+?:  condition
+=/  target-val  %+  apply-scalar  data-row  +.target-ps
 ```
 
 ### Tall Form Alignment
@@ -124,6 +132,42 @@ false-branch
 true-branch
 false-branch
 ```
+
+### Tall Form Cell Alignment
+
+align all cell items to the same column
+```hoon
+::  ✓ Good
+      :+  %fn
+          type.expr
+          |=  =data-row
+          ^-  dime
+          ?-  number-system
+              ::
+              %rd  :-  number-system
+                      (~(abs rd:math [%z .~1e-15]) +:(f.expr data-row))
+              ::
+              %sd  [number-system (sun:si (abs:si +:(f.expr data-row)))]
+              ::
+              %ud  (f.expr data-row)
+              ==
+
+::  ✗ Bad
+      :+  %fn
+        type.expr
+        |=  =data-row
+        ^-  dime
+        ?-  number-system
+            ::
+            %rd  :-  number-system
+                     (~(abs rd:math [%z .~1e-15]) +:(f.expr data-row))
+            ::
+            %sd  [number-system (sun:si (abs:si +:(f.expr data-row)))]
+            ::
+            %ud  (f.expr data-row)
+            ==
+```
+
 
 **bracket [] and paren () format**
 
