@@ -107,6 +107,30 @@ Conditional runes (`?:`, `?~`, `?@`, etc.) take exactly **one hoon expression** 
   (another-gate y)
 ```
 
+### Tall-Form `?+` / `?-` Must End With `==`
+
+Tall-form switch runes like `?+` and `?-` open a clause block that must be closed with `==`.
+
+If you forget the final `==`, the parser often reports a syntax error at the next arm (`++ foo`) or the next top-level form, which can make the real problem hard to spot.
+
+```hoon
+::  WRONG — missing final ==
+?+  -.result  ;/("")
+  %result-set
+    (print-result-export-set +.result)
+
+::  CORRECT
+?+  -.result  ;/("")
+  %result-set
+    (print-result-export-set +.result)
+==
+
+::  Another example
+?-  kind
+  %foo  foo-value
+  %bar  bar-value
+==
+
 ## Lists
 
 ```hoon
