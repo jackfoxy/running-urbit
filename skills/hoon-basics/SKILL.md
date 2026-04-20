@@ -224,6 +224,16 @@ dime:;;(literal-value:ast datum)   ::  CORRECT
 
 This applies any time you want to access a wing (`+`, `-`, `p`, `q`, a face name, etc.) from the result of a gate call, cast, or other expression — always use `:` in that position.
 
+11. lark and wing notation on arm execution
+
+```hoon
+::  WRONG — syntax error: +. cannot follow an arm application ()
++.(apply-resolved-scalar (~(got by rs) sname) [%indexed-row key.row data.row])
+
+::  CORRECT — use colon : on parens () not dot .
++:(apply-resolved-scalar (~(got by rs) sname) [%indexed-row key.row data.row])
+```
+
 ## Fast Lookups
 
 ### Arithmetic
