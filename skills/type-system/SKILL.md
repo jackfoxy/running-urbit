@@ -347,16 +347,50 @@ x.p  ::  5
 ```
 
 #### Recursive Type
+
 ```hoon
 +$  json
   $@  ~
   $%  [%s p=@t]
       [%n p=@ta]
       [%b p=?]
-      [%a p=(list json)]
-      [%o p=(map @t json)]
+      [%a p=(list json)]      :: recursion via stdlib `list`
+      [%o p=(map @t json)]    :: recursion via stdlib `map`
   ==
 ```
+
+**Rule.** A `+$` mold may only recur on itself when the self-reference passes through a polymorphic stdlib mold (`list`, `tree`, `map`, `set`, `unit`) or a user-defined `|*` / `|$` mold builder. Those builders are wet gates: their bodies are evaluated at call site, which defers — and thereby ties off — the recursion. Without that guard, the mold compiler has no fixed-point operator and cannot resolve the self-reference.
+
+**Does not compile — direct self-reference inside `+$`:**
+
+```hoon
++$  expr
+  $%  [%leaf x=@]
+      [%node left=expr right=expr]   :: ERROR: expr unresolved
+  ==
+```
+
+`$+` does not fix this. `$+` is face annotation for type display and equality, not a fixed-point marker.
+
+**Workarounds when you need a binary expression tree:**
+
+1. **Encode through `tree`** — pay structural-correctness in convention.
+   ```hoon
+   +$  expr        (tree expr-node)
+   +$  expr-node   $%([%leaf x=@] [%op =operator])
+   ```
+   `tree` is a binary noun shape; nothing in the mold prevents an `%op` node with no children or a `%leaf` with children. Evaluator must validate.
+
+2. **Flatten with precedence-tiered lists** — encodes precedence and associativity in the type itself.
+   ```hoon
+   +$  add-expr   (list add-term)             :: + / - chain, lowest precedence
+   +$  add-term   [op=add-op =mul-expr]
+   +$  mul-expr   (list mul-term)             :: * / / chain, higher precedence
+   +$  mul-term   [op=mul-op =atom-expr]
+   ```
+   Left-fold at runtime; no recursive evaluator needed; no malformed-tree class of bug.
+
+3. **Define a `|$` mold builder of your own** when the stdlib containers don't fit. Recursion lives in the builder, not in `+$`.
 
 #### Constrained Type
 ```hoon
